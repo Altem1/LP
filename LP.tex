@@ -300,22 +300,46 @@ public:
 \phantomsection
 \addcontentsline{toc}{subsection}{Menu Entidades}
 \subsection*{Menu Entidades}
+La función \verb|menu_Entidades()| muestra un menu interactivo por consola para administrar
+las funciones relacionadas a Entidades. Funciona por medio de un ciclo \texttt{do-while}
+y un \texttt{switch-case} que lee la opción del usuario, para ejecutar acciones como
+dar de alta, consultar, eliminar o modificar entidades, por consiguiente permitir
+la navegacion hacia la edicion de sus atributos y datos.
 
 \phantomsection
 \addcontentsline{toc}{subsection}{Captura Entidad}
 \subsection*{Captura Entidad}
+La función \verb|CapturaEntidad()| es la plantilla principal para crear registros, se usa
+una variables de tipo Entidad, primero se le pide al usuario el nombre de la entidad, despues
+se inicializa las variables \texttt{nueva.atr} "conexion con la lista de atributos", \texttt{nueva.data} "la dirección"
+real de donde se encuentran los datos de los bloques, y \texttt{nueva.sig} que es la dirección a la
+siguiente entidad, con esto se crea un registro nuevo con sus listas vacias.
 
 \phantomsection
 \addcontentsline{toc}{subsection}{Alta Entidad}
 \subsection*{Alta Entidad}
+Esta función es la encargada de verficar que todo este en condiciones para que se cree una entidad
+primero manda a llamar \verb|CapturaEntidad| para crear un registro temporal, seguido de esto
+viene la verificacion con la funcion \verb|buscaEntidad| para verificar que no haya una funcion con
+ese mismo nombre, en caso que no exista usa la funcion \verb|escribeEntidad(nueva)| y guarda la dirección
+en un \verb|long dir| para finalmente usar la función \verb|insertaEntidad| para escribir en el archivo.
 
 \phantomsection
 \addcontentsline{toc}{subsection}{Busca Entidad}
 \subsection*{Busca Entidad}
+La función \verb|long CDiccionario::buscaEntidad(char nombre[])| verifica si se encuentra la entidad,
+en caso de que si la encuentre dentro del recorrido \verb|while(cab != -1)| regresa la dirección
+en donde se encuentra, en caso contrario regresa un valor de -1, dentro del ciclo hacer un string compare
+de la posicion donde se encuentra y el nombre que se le haya pasado.
 
 \phantomsection
 \addcontentsline{toc}{subsection}{Get Cabecera Entidades}
 \subsection*{Get Cabecera Entidades}
+Esta función es la encargada de obtener la direccion dentro del archivo de donde inicia nuestra lista
+de entidades, empieza usando un \verb|long dir|, para despues con \verb|fseek| dirigirse
+al inicio de nuestro archivo, con un \verb|fread| extraemos la direccion y la guardamos en la variable
+\verb|long dir|, sabemos que esa es la cabecera ya que todo el programa esta construido que en el inicio
+del archivo se encuentra nuestra cabecera de la lista de entidades.
 
 \phantomsection
 \addcontentsline{toc}{subsection}{Lee Entidad}
