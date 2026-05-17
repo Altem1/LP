@@ -1,0 +1,373 @@
+\documentclass[12pt]{article}
+
+% --- Configuración de Fuentes (Obligatorio compilar con XeLaTeX) ---
+\usepackage{fontspec}
+\setmainfont{Arial} % Todo el texto general en Arial
+\newfontfamily\arialblack{Arial Black} % Fuente específica para los Títulos
+
+\usepackage[spanish]{babel}
+\usepackage[margin=2.5cm, headheight=20pt]{geometry} % Margen 2.5 cm
+\usepackage{setspace}
+\singlespacing % Interlineado sencillo forzado
+\usepackage{graphicx}
+\usepackage[table]{xcolor} 
+\usepackage{tikz}
+\usepackage{fancyhdr}
+\usepackage[most]{tcolorbox}
+\usepackage[hidelinks]{hyperref}
+\usepackage{titlesec}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{multicol}
+\usepackage{tabularx}
+\usepackage{listings} 
+
+% --- 1. Definición de Colores ---
+\definecolor{MainBlue}{RGB}{0, 114, 187}
+\definecolor{LightBlue}{RGB}{235, 245, 255}
+\definecolor{AccentBlue}{RGB}{0, 180, 216}
+\definecolor{DarkGray}{RGB}{50, 50, 50}
+\definecolor{CodeGreen}{RGB}{0, 150, 136}
+\definecolor{CodeBlue}{RGB}{0, 114, 187}
+\definecolor{CodeGray}{RGB}{100, 100, 100}
+\definecolor{CodeBackground}{RGB}{245, 248, 250}
+
+% --- 2. Configuración de Listings (Códigos) ---
+\renewcommand{\lstlistingname}{Estructura}
+\renewcommand{\lstlistlistingname}{Índice de estructuras}
+
+\lstset{
+    language=C++,
+    backgroundcolor=\color{CodeBackground},
+    commentstyle=\color{CodeGray}\itshape,
+    keywordstyle=\color{CodeBlue}\bfseries,
+    numberstyle=\tiny\color{CodeGray},
+    stringstyle=\color{CodeGreen},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    captionpos=b,
+    numbers=left,
+    numbersep=10pt,
+    frame=leftline,
+    rulecolor=\color{MainBlue},
+    framesep=5pt
+}
+
+% --- 3. Configuración de Títulos (Formato Rúbrica) ---
+% Títulos (Section): Arial-Black 16 en color negro
+\titleformat{\section}{\color{black}\arialblack\fontsize{16}{19.2}\selectfont}{\thesection}{1em}{}[\titlerule]
+
+% Subtítulos (Subsection): Arial 14 Negrita en color negro
+\titleformat{\subsection}{\color{black}\fontsize{14}{16.8}\bfseries\selectfont}{\thesubsection}{1em}{}
+
+% --- Entorno para notas ---
+\newtcolorbox{infobox}[1]{
+  colback=LightBlue, colframe=MainBlue, fonttitle=\bfseries,
+  coltitle=white, title=#1, arc=2mm, boxrule=1pt
+}
+
+% --- Comando para listas limpias ---
+\newcommand{\campo}[2]{
+    \noindent\hangindent=1.2cm\makebox[0.6cm][l]{\color{MainBlue}\scriptsize$\bullet$} 
+    \textbf{#1} #2 \par\vspace{0.1cm}
+}
+
+\begin{document}
+
+% --- PORTADA ---
+\begin{titlepage}
+    \begin{tikzpicture}[remember picture, overlay]
+        \fill[MainBlue!20] (current page.north east) circle (4cm);
+        \fill[AccentBlue!30] (current page.north east) circle (2cm);
+        \fill[MainBlue!10] (current page.south west) -- ([xshift=8cm]current page.south west) -- ([yshift=6cm]current page.south west) -- cycle;
+        \draw[line width = 1.5pt, color=MainBlue]
+        ([shift={(1cm,-1cm)}]current page.north west) rectangle ([shift={(-1cm,1cm)}]current page.south east);
+    \end{tikzpicture}
+
+    \centering
+    \begin{minipage}{0.2\textwidth}
+        % \includegraphics[width=\linewidth]{logo_uaslp.png} 
+    \end{minipage}
+    \begin{minipage}{0.58\textwidth}
+        \centering
+        {\scshape\Large \color{MainBlue} Universidad Autónoma de \\ San Luis Potosí \par}
+        \vspace{0.2cm}
+        {\color{AccentBlue}\hrule height 1.5pt}\vspace{0.2cm}
+        {\footnotesize \textbf{FACULTAD DE INGENIERÍA} \par}
+    \end{minipage}
+    \begin{minipage}{0.2\textwidth}
+        \flushright
+        % \includegraphics[width=0.9\linewidth]{logo_fepzm.png}
+    \end{minipage}
+
+    \vspace{4cm}
+
+    \begin{minipage}{0.9\textwidth}
+        \centering
+        \textbf{\color{MainBlue} CARRERA:} \\
+        Ingeniería en Sistemas Inteligentes \\ [0.5cm]
+        \textbf{\color{MainBlue} ASIGNATURA:} \\
+        Lenguajes de programación \\ [0.5cm]
+        \textbf{\color{MainBlue} ELABORADO POR:} \\
+        \begin{tabular}{c}
+            369664 Antonio Jiménez José Emilio \\
+            388531 Alvarez Puente Alan Antonio
+        \end{tabular} \\ [0.5cm]
+        \textbf{\color{MainBlue} DOCENTE:} \\
+        [0.5cm] % Espacio listo para que pongas el nombre del profe
+        \textbf{\color{MainBlue} CICLO ESCOLAR:} \\
+        2025 - 2026
+    \end{minipage}
+
+    \vfill
+    {\large \bfseries \color{MainBlue} San Luis Potosí, S.L.P. \par}
+    {\color{gray} \today}
+\end{titlepage}
+
+% --- PÁGINAS INTERNAS ---
+\newpage
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small \color{gray} Lenguajes de Programación}
+\fancyhead[R]{\small \color{gray} Diccionario}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\tableofcontents
+\newpage
+
+\section{Estructuras de Datos y Objetos}
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Entidad}
+\subsection*{Descripción de la Estructura Entidad:}
+
+La estructura es el molde inicial de nuestro Diccionario en formato de base de datos de acceso aleatorio. Se establece un alias \texttt{cadena} para asegurar que cada registro tenga el mismo tamaño.
+
+\campo{cadena nombre:}{Identificador único de cada registro de entidad (máximo 30 caracteres).}
+\campo{long atr:}{Puntero tipo \texttt{long} que conecta la entidad con su lista de atributos.}
+\campo{long data:}{Dirección física en el archivo donde se almacenan los registros de datos reales.}
+\campo{long sig:}{Enlace a la siguiente entidad, permitiendo una estructura de lista ligada.}
+
+\bigskip
+
+\begin{lstlisting}[caption=Estructura de Datos de Entidad, label=code:entidad]
+#ifndef ENTIDAD_H_INCLUDED
+#define ENTIDAD_H_INCLUDED
+#include <iostream>
+#include <cstdio>
+
+typedef char cadena[30];
+struct Entidad
+{
+    cadena nombre;
+    long atr;
+    long data;
+    long sig;
+};
+#endif
+\end{lstlisting}
+
+% --- EJEMPLO DE DIAGRAMA ENUMERADO CON PIE DE IMAGEN ---
+% Para que cumpla la regla de la imagen, descomenta esto cuando tengas tu diagrama:
+% \begin{figure}[htbp]
+%     \centering
+%     % \includegraphics[width=0.7\textwidth]{tu_diagrama_entidad.png}
+%     \caption{Diagrama de la estructura Entidad y sus relaciones.}
+%     \label{fig:diagrama_entidad}
+% \end{figure}
+
+\newpage
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Atributos}
+\subsection*{Descripción de la Estructura Atributo:}
+
+Esta estructura es el molde para las columnas de nuestro Diccionario. Al igual que en la entidad, se usa el alias \texttt{cadena} para mantener el tamaño fijo en el archivo binario y evitar que los registros se desfasen. En esta estructura observamos las siguientes declaraciones:
+
+\campo{cadena nombre:}{Identificador del atributo dentro de la entidad.}
+\campo{unsigned int tipo:}{Código numérico que define el tipo de dato (ej. entero, flotante, cadena).}
+\campo{unsigned int tamano:}{Longitud en bytes que ocupará el valor del atributo en el registro.}
+\campo{char iskp:}{Bandera (flag) que indica si el atributo funciona como llave primaria (Primary Key).}
+\campo{long sig:}{Puntero lógico (offset) que enlaza con el siguiente atributo de la entidad.}
+\campo{cadena descripcion:}{Información adicional o etiqueta descriptiva del campo.}
+\campo{char null:}{Indicador booleano que define si el campo permite valores nulos.}
+
+\bigskip
+
+\begin{lstlisting}[caption=Estructura de Datos de Atributos, label=code:atributos]
+#ifndef ATRIBUTO_H
+#define ATRIBUTO_H
+
+typedef char cadena [30];
+
+typedef struct{
+    cadena nombre;
+    unsigned int tipo;
+    unsigned int tamano;
+    char iskp;
+    long sig;
+    cadena descripcion;
+    char null;
+}Atributo;
+
+#endif
+\end{lstlisting}
+
+\newpage
+
+\phantomsection
+\addcontentsline{toc}{subsection}{CDiccionario}
+\subsection*{Descripción del Objeto CDiccionario:}
+
+La clase \texttt{CDiccionario} funciona como el administrador principal del sistema. En su parte privada, contiene las variables necesarias para controlar el flujo del archivo binario y saber exactamente en qué parte del disco estamos parados mientras el usuario navega. En esta sección observamos las siguientes declaraciones:
+
+\campo{FILE *arch:}{Es el puntero al archivo físico donde se almacenan todas las entidades, atributos y datos.}
+\campo{Entidad activa:}{Representa la entidad que el usuario está manipulando o consultando en ese momento.}
+\campo{long dir:}{Guarda la dirección física (offset) actual dentro del archivo para las operaciones de lectura/escritura.}
+\campo{int nAtributos:}{Es un contador que lleva el registro de cuántos atributos tiene la entidad seleccionada.}
+\campo{long tambloque:}{Almacena el tamaño del bloque activo para gestionar correctamente el espacio en el archivo.}
+\campo{char nombreArchivo[50]:}{Es el arreglo donde se guarda el nombre del archivo que el usuario decide abrir o crear.}
+
+\begin{lstlisting}[caption=Estructura de Datos CDiccionario, label=code:cdiccionario]
+#ifndef CDICCIONARIO_H_INCLUDED
+#define CDICCIONARIO_H_INCLUDED
+
+#include <cstdio>
+#include "Atributo.h"
+#include "Entidad.h"
+
+class CDiccionario
+{
+private:
+    FILE *arch;
+    Entidad activa;
+    long dir;
+    int nAtributos;
+    long tambloque;
+
+    char nombreArchivo[50];
+public:
+    //constructor
+    CDiccionario();
+
+    //Entidades
+    void Menu_Entidades();
+    Entidad CapturaEntidad();
+    void altaEntidad();
+    long buscaEntidad(char nombre[30]);
+    long getcabeceraEntidades();
+    Entidad leeEntidad(long dir);
+    void EscribeCabEntidades(long cab);
+    long escribeEntidad(Entidad ant);
+    void insertaEntidad(Entidad nvo, long dir);
+    void ConsultaEntidades();
+    void BajaEntidad();
+    long EliminaEntidad(char nombre[30]);
+    void reescribeEntidad(long dir, Entidad ant);
+    void modificaEntidad();
+
+    //Atributos
+    void Menu_Atributos();
+    void consultarAtributo();
+    long eliminaAtributo(char cad[30]);
+    void modificaAtributo();
+    void AltaAtributo();
+    Atributo CapturaAt();
+    void insertaAtributo(Atributo nvo, long dir);
+    long BuscarAtributo(char *atr);
+    Atributo leeAtributo(long dir);
+    long EscribeAtributo(Atributo ant);
+    void reescribeAtributo(long dir, Atributo atr);
+    void BajaAtributo();
+
+    //Datos
+    void Menu_Datos();
+
+    //Principal
+    void menu();
+    void Nuevo();
+    void abrir();
+
+};
+
+#endif
+\end{lstlisting}
+
+\newpage
+\section[Funciones]{Funciones \hfill \fontsize{14}{17}\bfseries\selectfont Entidades}
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Menu Entidades}
+\subsection*{Menu Entidades}
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Captura Entidad}
+\subsection*{Captura Entidad}
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Alta Entidad}
+\subsection*{Alta Entidad}
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Busca Entidad}
+\subsection*{Busca Entidad}
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Get Cabecera Entidades}
+\subsection*{Get Cabecera Entidades}
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Lee Entidad}
+\subsection*{Lee Entidad}
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Escribe Cabecera Entidades}
+\subsection*{Escribe Cabecera Entidades}
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Escribe Entidad}
+\subsection*{Escribe Entidad}
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Inserta Entidad}
+\subsection*{Inserta Entidad}
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Consulta Entidades}
+\subsection*{Consulta Entidades}
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Baja Entidad}
+\subsection*{Baja Entidad}
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Elimina Entidad}
+\subsection*{Elimina Entidad}
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Reescribe Entidad}
+\subsection*{Reescribe Entidad}
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Modifica Entidad}
+\subsection*{Modifica Entidad}
+\newpage
+
+\section{Diagramas}
+
+\newpage
+\section{Archivo}
+
+\newpage
+\section{Clave primaria}
+
+\newpage
+\section{Conclusiones}
+
+\newpage
+\phantomsection
+\section*{Referencias}
+\addcontentsline{toc}{section}{Referencias}
+
+\end{document}
