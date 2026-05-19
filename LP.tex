@@ -300,63 +300,91 @@ public:
 \phantomsection
 \addcontentsline{toc}{subsection}{Menu Entidades}
 \subsection*{Menu Entidades}
-La función \verb|menu_Entidades()| muestra un menu interactivo por consola para administrar
+\textbf{Prototipo:} \verb|void CDiccionario::Menu_Entidades();|\\
+La función \verb|menu_Entidades()| muestra un menú interactivo por consola para administrar
 las funciones relacionadas a Entidades. Funciona por medio de un ciclo \texttt{do-while}
 y un \texttt{switch-case} que lee la opción del usuario, para ejecutar acciones como
 dar de alta, consultar, eliminar o modificar entidades, por consiguiente permitir
-la navegacion hacia la edicion de sus atributos y datos.
+la navegación hacia la edición de sus atributos y datos.
 
 \phantomsection
 \addcontentsline{toc}{subsection}{Captura Entidad}
 \subsection*{Captura Entidad}
+\textbf{Prototipo:} \verb|Entidad CDiccionario::CapturaEntidad();|\\
 La función \verb|CapturaEntidad()| es la plantilla principal para crear registros, se usa
-una variables de tipo Entidad, primero se le pide al usuario el nombre de la entidad, despues
-se inicializa las variables \texttt{nueva.atr} "conexion con la lista de atributos", \texttt{nueva.data} "la dirección"
+una variable de tipo Entidad, primero se le pide al usuario el nombre de la entidad, después
+se inicializa las variables \texttt{nueva.atr} "conexión con la lista de atributos", \texttt{nueva.data} "la dirección"
 real de donde se encuentran los datos de los bloques, y \texttt{nueva.sig} que es la dirección a la
-siguiente entidad, con esto se crea un registro nuevo con sus listas vacias.
+siguiente entidad, con esto se crea un registro nuevo con sus listas vacías.
 
 \phantomsection
 \addcontentsline{toc}{subsection}{Alta Entidad}
 \subsection*{Alta Entidad}
-Esta función es la encargada de verficar que todo este en condiciones para que se cree una entidad
+\textbf{Prototipo:} \verb|void CDiccionario::altaEntidad();|\\
+Esta función es la encargada de verificar que todo esté en condiciones para que se cree una entidad,
 primero manda a llamar \verb|CapturaEntidad| para crear un registro temporal, seguido de esto
-viene la verificacion con la funcion \verb|buscaEntidad| para verificar que no haya una funcion con
-ese mismo nombre, en caso que no exista usa la funcion \verb|escribeEntidad(nueva)| y guarda la dirección
+viene la verificación con la función \verb|buscaEntidad| para verificar que no haya una entidad con
+ese mismo nombre, en caso que no exista usa la función \verb|escribeEntidad(nueva)| y guarda la dirección
 en un \verb|long dir| para finalmente usar la función \verb|insertaEntidad| para escribir en el archivo.
 
 \phantomsection
 \addcontentsline{toc}{subsection}{Busca Entidad}
 \subsection*{Busca Entidad}
+\textbf{Prototipo:} \verb|long CDiccionario::buscaEntidad(char nombre[1]);|\\
 La función \verb|long CDiccionario::buscaEntidad(char nombre[])| verifica si se encuentra la entidad,
-en caso de que si la encuentre dentro del recorrido \verb|while(cab != -1)| regresa la dirección
-en donde se encuentra, en caso contrario regresa un valor de -1, dentro del ciclo hacer un string compare
-de la posicion donde se encuentra y el nombre que se le haya pasado.
+en caso de que sí la encuentre dentro del recorrido \verb|while(cab != -1)| regresa la dirección
+en donde se encuentra, en caso contrario regresa un valor de -1, dentro del ciclo hace un string compare
+de la posición donde se encuentra y el nombre que se le haya pasado.
+
+\newpage
 
 \phantomsection
 \addcontentsline{toc}{subsection}{Get Cabecera Entidades}
 \subsection*{Get Cabecera Entidades}
-Esta función es la encargada de obtener la direccion dentro del archivo de donde inicia nuestra lista
-de entidades, empieza usando un \verb|long dir|, para despues con \verb|fseek| dirigirse
-al inicio de nuestro archivo, con un \verb|fread| extraemos la direccion y la guardamos en la variable
-\verb|long dir|, sabemos que esa es la cabecera ya que todo el programa esta construido que en el inicio
+\textbf{Prototipo:} \verb|long CDiccionario::getcabeceraEntidades();|\\
+Esta función es la encargada de obtener la dirección dentro del archivo de donde inicia nuestra lista
+de entidades, empieza usando un \verb|long dir|, para después con \verb|fseek| dirigirse
+al inicio de nuestro archivo, con un \verb|fread| extraemos la dirección y la guardamos en la variable
+\verb|long dir|, sabemos que esa es la cabecera ya que todo el programa está construido para que en el inicio
 del archivo se encuentra nuestra cabecera de la lista de entidades.
 
 \phantomsection
 \addcontentsline{toc}{subsection}{Lee Entidad}
 \subsection*{Lee Entidad}
+\textbf{Prototipo:} \verb|Entidad CDiccionario::leeEntidad(long dir);|\\
+Se encarga de extraer la entidad del archivo, esta función llega con una
+dirección, esa dirección a partir del \verb|buscaEntidad|, es usada para
+moverse dentro del archivo, hacer una copia y regresar esa copia para su
+posterior modificación o consulta.
 
 \phantomsection
 \addcontentsline{toc}{subsection}{Escribe Cabecera Entidades}
 \subsection*{Escribe Cabecera Entidades}
+\textbf{Prototipo:} \verb|void CDiccionario::EscribeCabEntidades(long cab);|\\
+La función empieza con un paso de parámetro de la cabecera, dentro de esta
+se mueve al inicio del archivo y en ese inicio escribe lo que haya tenido
+el parámetro de nombre cab.
 
 \phantomsection
 \addcontentsline{toc}{subsection}{Escribe Entidad}
 \subsection*{Escribe Entidad}
+\textbf{Prototipo:} \verb|long CDiccionario::escribeEntidad(Entidad ant);|\\
+Esta función se encarga de registrar físicamente una nueva entidad en el archivo,
+donde se le pasa una copia de la entidad, la funcion usa un \verb|fseek| con \verb|SEEK_END|
+para ir hasta el final del ultimo registro del archivo y en ese espacio de memoria
+usa un \verb|fwrite| para guardarlo en el archivo
 
 \phantomsection
 \addcontentsline{toc}{subsection}{Inserta Entidad}
 \subsection*{Inserta Entidad}
-
+\textbf{Prototipo:} \verb|void CDiccionario::insertaEntidad(Entidad nvo, long dir);|\\
+Esta función se encarga de enlazar secuencialmente de manera
+lógica una nueva entidad verificando tres casos: si el archivo
+está vacío, si va al inicio apoyándose de un \verb|strcmp|,
+o si busca su lugar usando un ciclo \verb|while|. En esencia,
+como \verb|escribeEntidad| siempre guarda físicamente los datos
+al final, esta función solo reconecta las variables \verb|nvo.sig|
+para que apunten de manera correcta y mantengan el orden.
 \phantomsection
 \addcontentsline{toc}{subsection}{Consulta Entidades}
 \subsection*{Consulta Entidades}
