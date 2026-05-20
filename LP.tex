@@ -446,6 +446,146 @@ reubica la entidad actualizada utilizando
 
 \section[Funciones Atributo]{Funciones \hfill \fontsize{14}{17}\selectfont Atributo}
 
+\phantomsection
+\addcontentsline{toc}{subsection}{Menu Atributos}
+\subsection*{Menu Atributos}
+\textbf{Prototipo:} \verb|void CDiccionario::Menu_Atributos();|\\
+La función \verb|Menu_Atributos()| muestra un menú interactivo 
+por consola para administrar las funciones relacionadas a 
+Atributos. Funciona por medio de un ciclo \texttt{do-while} y 
+un \texttt{switch-case} que lee la opción del usuario, 
+para ejecutar acciones como dar de alta, consultar, 
+eliminar o modificar atributos, por consiguiente permitir 
+la navegación hacia la edición de sus componentes.
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Captura Atributo}
+\subsection*{Captura Atributo}
+\textbf{Prototipo:} \verb|Atributo CDiccionario::CapturaAt();|\\
+La función \verb|CapturaAt()| es la plantilla principal para 
+crear registros, se usa una variable de tipo Atributo, primero 
+se le pide al usuario el nombre, después se pregunta el tipo y 
+tamaño, y se inicializan las variables \texttt{nuevoA.iskp} y 
+\texttt{nuevoA.null}, y \texttt{nuevoA.sig} en -1, con esto se 
+crea un registro nuevo con sus datos listos.
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Alta Atributo}
+\subsection*{Alta Atributo}
+\textbf{Prototipo:} \verb|void CDiccionario::AltaAtributo();|\\
+Esta función es la encargada de verificar que todo esté en 
+condiciones para que se cree un atributo, primero manda a 
+llamar \verb|CapturaAt| para crear un registro temporal, 
+seguido de esto viene la verificación con la función 
+\verb|BuscarAtributo| para verificar que no haya un atributo 
+con ese mismo nombre, en caso que no exista usa la función 
+\verb|EscribeAtributo(nuevoA)| y guarda la dirección en un 
+\verb|long dir| para finalmente usar la función 
+\verb|insertaAtributo| para escribir en el archivo.
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Buscar Atributo}
+\subsection*{Buscar Atributo}
+\textbf{Prototipo:} \verb|long CDiccionario::BuscarAtributo(char *atr);|\\
+La función \verb|long CDiccionario::BuscarAtributo(char *atr)| 
+verifica si se encuentra el atributo, en caso de que sí lo 
+encuentre dentro del recorrido \verb|while(cab != -1)| regresa 
+la dirección en donde se encuentra, en caso contrario regresa 
+un valor de -1, dentro del ciclo hace un string compare de 
+la posición donde se encuentra y el nombre que se le haya pasado.
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Lee Atributo}
+\subsection*{Lee Atributo}
+\textbf{Prototipo:} \verb|Atributo CDiccionario::leeAtributo(long dir);|\\
+Se encarga de extraer el atributo del archivo, esta función 
+llega con una dirección, esa dirección a partir del 
+\verb|BuscarAtributo|, es usada para moverse dentro del archivo, 
+hacer una copia y regresar esa copia para su posterior 
+modificación o consulta.
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Escribe Atributo}
+\subsection*{Escribe Atributo}
+\textbf{Prototipo:} \verb|long CDiccionario::EscribeAtributo(Atributo ant);|\\
+Esta función se encarga de registrar físicamente un nuevo 
+atributo en el archivo, donde se le pasa una copia del atributo, 
+la función usa un \verb|fseek| con \verb|SEEK_END| para ir 
+hasta el final del último registro del archivo y en ese espacio 
+de memoria usa un \verb|fwrite| para guardarlo en el archivo.
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Inserta Atributo}
+\subsection*{Inserta Atributo}
+\textbf{Prototipo:} \verb|void CDiccionario::insertaAtributo(Atributo nvo, long dir);|\\
+Esta función se encarga de enlazar secuencialmente de manera lógica un nuevo atributo verificando tres casos: si en el caso que la cabecera \verb|activa.atr| sea -1 "Lista vacía", se enlaza directo, el segundo caso ocurre cuando el atributo se encuentra al inicio, o sea que el \verb|strcmp| sea mayor a 0 decidiendo así que va antes, el tercer caso es cuando tiene que hacer una búsqueda apoyándose de un \verb|while| que recorre toda la lista mientras no llegue al final, dentro usa otro \verb|strcmp| para ver en qué lugar se encuentra su inmediato.\\newline
+En esencia la función hace reconexión entre la variable 
+\verb|nvo.sig| para que quede de manera ordenada, todos los 
+\verb|EscribeAtributo| siempre hacen el write al final por 
+tanto lo único que cambia esta función son las direcciones a 
+las cuales van apuntando de manera ordenada.
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Consultar Atributo}
+\subsection*{Consultar Atributo}
+\textbf{Prototipo:} \verb|void CDiccionario::consultarAtributo();|\\
+Esta función es la encargada de imprimir en consola los 
+atributos que se encuentran dentro de nuestro archivo. 
+Para ello, hace uso de \verb|activa.atr| para ver dónde 
+inicia la cabecera del atributo; subsecuentemente hace uso 
+de un ciclo \verb|while (cab != -1)|, el cual va imprimiendo 
+cada atributo con la dirección de sus componentes.
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Baja Atributo}
+\subsection*{Baja Atributo}
+\textbf{Prototipo:} \verb|void CDiccionario::BajaAtributo();|\\
+Su única función es preguntar al usuario por el nombre del 
+atributo, este nombre se lo pasa a la función 
+\verb|eliminaAtributo| en caso de que no exista muestra en 
+consola un aviso al usuario, por el contrario si existe, se 
+hace la desconexión.
+
+\newpage
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Elimina Atributo}
+\subsection*{Elimina Atributo}
+\textbf{Prototipo:} \verb|long CDiccionario::eliminaAtributo(char cad[]);|\\
+Esta función empieza verificando la posición desde 
+\verb|activa.atr|, para después verificar si el lugar actual 
+donde está parado es el atributo a borrar, en caso que no 
+hace un recorrido donde hace uso de \verb|while & strcmp|, 
+para encontrar dónde está, usa una variable anterior para 
+poder hacer la desconexión del atributo, no borra nada dentro 
+del archivo solo desconecta y conecta con su inmediato 
+siguiente, lo actualiza en el archivo con la función 
+\verb|reescribeAtributo|.
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Reescribe Atributo}
+\subsection*{Reescribe Atributo}
+\textbf{Prototipo:} \verb|void CDiccionario::reescribeAtributo(long dir, Atributo atr);|\\
+Esta función se encarga de actualizar los datos de un registro 
+ya existente en el archivo binario. Recibe una dirección y una 
+estructura con la información modificada, usa \verb|fseek| con 
+\verb|SEEK_SET| para posicionarse exactamente en la dirección 
+proporcionada, y \verb|fwrite| para sobreescribir el bloque de 
+datos. Es indispensable para actualizar los apuntadores lógicos 
+durante operaciones de inserción y baja.
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Modifica Atributo}
+\subsection*{Modifica Atributo}
+\textbf{Prototipo:} \verb|void CDiccionario::modificaAtributo();|\\
+Esta función permite actualizar los datos de un registro. 
+Tras verificar su existencia y capturar la nueva información, 
+hace uso de una estrategia segura para mantener el orden 
+alfabético de la lista: elimina lógicamente el registro 
+antiguo con \verb|eliminaAtributo| y después guarda y 
+reubica el atributo actualizado utilizando 
+\verb|reescribeAtributo| e \verb|insertaAtributo|.
+
 \newpage
 
 \section{Diagramas}
