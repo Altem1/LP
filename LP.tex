@@ -295,7 +295,7 @@ public:
 \end{lstlisting}
 
 \newpage
-\section[Funciones]{Funciones \hfill \fontsize{14}{17}\bfseries\selectfont Entidades}
+\section[Funciones Entidad]{Funciones \hfill \fontsize{14}{17}\selectfont Entidad}
 
 \phantomsection
 \addcontentsline{toc}{subsection}{Menu Entidades}
@@ -385,25 +385,67 @@ o si busca su lugar usando un ciclo \verb|while|. En esencia,
 como \verb|escribeEntidad| siempre guarda físicamente los datos
 al final, esta función solo reconecta las variables \verb|nvo.sig|
 para que apunten de manera correcta y mantengan el orden.
+\newpage
+
 \phantomsection
 \addcontentsline{toc}{subsection}{Consulta Entidades}
 \subsection*{Consulta Entidades}
+\textbf{Prototipo:} \verb|void CDiccionario::ConsultaEntidades();| \\
+Esta función es la encargada de imprimir en consola las entidades que
+se encuentran dentro de nuestro archivo. Para ello, hace uso de la función
+\verb|getcabeceraEntidades| para ver dónde inicia la cabecera de la entidad;
+subsecuentemente hace uso de un ciclo \verb|while (cab != -1)|, el cual va
+imprimiendo cada entidad con la dirección de sus componentes.
 
 \phantomsection
 \addcontentsline{toc}{subsection}{Baja Entidad}
 \subsection*{Baja Entidad}
+\textbf{Prototipo:} \verb|void CDiccionario::BajaEntidad();|
+Su unica funcion es preguntar al usuario por el nombre de la
+entidad, este nombre se lo pasa a la función \verb|EliminaEntidad|
+en caso de que no exista muestra en consola un aviso al usuario,
+por el contrario si existe, muestra un aviso que fue eliminado.
 
 \phantomsection
 \addcontentsline{toc}{subsection}{Elimina Entidad}
 \subsection*{Elimina Entidad}
+\textbf{Prototipo:} \verb|long CDiccionario::EliminaEntidad(char nombre[]);|
+Esta funcion empieza haciendo una verificación, si el archivo esta vacio
+regresa un -1, para despues verificar si el lugar actual donde esta parado es
+la entidad a borrar, en caso que no hace un recorrido donde hace uso de
+\verb|while & strcmp|, para encontrar donde esta, uso una varible anterior
+para poder hacer la desconexion de la entidad, no borra nada dentro del archivo
+solo desceonecta y conecta con su inmediato siguiente, lo actualiza en el archivo
+con la función \verb|reescribeEntidad|.
+
 
 \phantomsection
 \addcontentsline{toc}{subsection}{Reescribe Entidad}
 \subsection*{Reescribe Entidad}
+\textbf{Prototipo:} \verb|void CDiccionario::reescribeEntidad(long dir, Entidad ant);|\\
+Esta función se encarga de actualizar los datos de un registro
+ya existente en el archivo binario. Recibe una dirección y una
+estructura con la información modificada, usa \verb|fseek|
+con \verb|SEEK_SET| para posicionarse exactamente en la
+dirección proporcionada, y \verb|fwrite| para sobreescribir
+el bloque de datos. Es indispensable para actualizar los
+apuntadores lógicos durante operaciones de inserción y baja.
 
 \phantomsection
 \addcontentsline{toc}{subsection}{Modifica Entidad}
 \subsection*{Modifica Entidad}
+\textbf{Prototipo:} \verb|void CDiccionario::modificaEntidad();|\\
+Esta función permite actualizar los datos de un registro.
+Tras verificar que existencia y capturar la nueva información,
+hace uso de una estrategia segura para mantener el orden
+alfabético de la lista: elimina lógicamente el registro
+antiguo con \verb|EliminaEntidad| y despues guarda y
+reubica la entidad actualizada utilizando
+\verb|escribeEntidad| e \verb|insertaEntidad|.
+\newpage
+
+\section[Funciones Atributo]{Funciones \hfill \fontsize{14}{17}\selectfont Atributo}
+
 \newpage
 
 \section{Diagramas}
