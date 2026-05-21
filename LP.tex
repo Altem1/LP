@@ -5,6 +5,8 @@
 \setmainfont{Arial} % Todo el texto general en Arial
 \newfontfamily\arialblack{Arial Black} % Fuente específica para los Títulos
 
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta}
 \usepackage[spanish]{babel}
 \usepackage[margin=2.5cm, headheight=20pt]{geometry} % Margen 2.5 cm
 \usepackage{setspace}
@@ -21,6 +23,10 @@
 \usepackage{multicol}
 \usepackage{tabularx}
 \usepackage{listings} 
+
+\addto\captionsspanish{
+  \renewcommand{\figurename}{Diagrama}
+}
 
 % --- 1. Definición de Colores ---
 \definecolor{MainBlue}{RGB}{0, 114, 187}
@@ -387,6 +393,61 @@ al final, esta función solo reconecta las variables \verb|nvo.sig|
 para que apunten de manera correcta y mantengan el orden.
 \newpage
 
+\addcontentsline{toc}{subsection}{Diagrama Insercción en Entidad}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+    scale=0.75, transform shape,
+    node distance=0.8cm and 0.5cm,
+    box/.style={rectangle, draw=MainBlue, fill=white, minimum height=0.8cm, text centered, font=\footnotesize},
+    head/.style={box, fill=MainBlue!20, font=\footnotesize\bfseries},
+    nvo/.style={box, fill=AccentBlue!20, font=\footnotesize\bfseries},
+    ptr/.style={box, fill=gray!10},
+    arrow/.style={-{Stealth}, thick, MainBlue}
+]
+
+% --- CASO 1: Lista Vacia ---
+\node[anchor=west, font=\bfseries] (t1) at (0, 0) {Caso 1: Lista Vacia (Cabecera = -1)};
+\node[head, below=0.8cm of t1.west, anchor=west] (c1) {Cabecera Entidad};
+\node[nvo, right=1.5cm of c1] (n1) {Nueva Entidad};
+\node[ptr, right=0cm of n1] (p1) {sig: -1};
+\draw[arrow] (c1.east) -- (n1.west);
+
+% --- CASO 2: Al Inicio ---
+\node[anchor=west, font=\bfseries] (t2) at (0, -2) {Caso 2: Insercion al Inicio (Va antes alfabeticamente)};
+\node[head, below=0.8cm of t2.west, anchor=west] (c2) {Cabecera Entidad};
+\node[nvo, right=1cm of c2] (n2) {Nueva Entidad};
+\node[ptr, right=0cm of n2] (p2) {sig};
+\node[box, right=1.5cm of p2] (e2) {Entidad Existente};
+\node[ptr, right=0cm of e2] (pe2) {sig: \dots};
+\draw[arrow] (c2.east) -- (n2.west);
+\draw[arrow] (p2.east) -- (e2.west);
+
+% --- CASO 3: En Medio ---
+\node[anchor=west, font=\bfseries] (t3) at (0, -4) {Caso 3: Insercion en Medio (Busca su lugar con while)};
+\node[box, below=0.8cm of t3.west, anchor=west] (e3_1) {Entidad Anterior};
+\node[ptr, right=0cm of e3_1] (p3_1) {sig};
+\node[nvo, right=1.2cm of p3_1] (n3) {Nueva Entidad};
+\node[ptr, right=0cm of n3] (p3_2) {sig};
+\node[box, right=1.2cm of p3_2] (e3_2) {Entidad Siguiente};
+\node[ptr, right=0cm of e3_2] (pe3_2) {sig: \dots};
+\draw[arrow] (p3_1.east) -- (n3.west);
+\draw[arrow] (p3_2.east) -- (e3_2.west);
+
+% --- CASO 4: Al Final ---
+\node[anchor=west, font=\bfseries] (t4) at (0, -6) {Caso 4: Insercion al Final (Va despues de todos)};
+\node[box, below=0.8cm of t4.west, anchor=west] (e4_1) {Ultima Entidad};
+\node[ptr, right=0cm of e4_1] (p4_1) {sig};
+\node[nvo, right=1.5cm of p4_1] (n4) {Nueva Entidad};
+\node[ptr, right=0cm of n4] (p4_2) {sig: -1};
+\draw[arrow] (p4_1.east) -- (n4.west);
+
+\end{tikzpicture}
+\caption{Representacion grafica de los 4 casos de insercion logica para la lista de Entidades.}
+\label{fig:casos_insercion_entidad}
+\end{figure}
+
 \phantomsection
 \addcontentsline{toc}{subsection}{Consulta Entidades}
 \subsection*{Consulta Entidades}
@@ -418,6 +479,50 @@ para poder hacer la desconexion de la entidad, no borra nada dentro del archivo
 solo desceonecta y conecta con su inmediato siguiente, lo actualiza en el archivo
 con la función \verb|reescribeEntidad|.
 
+\addcontentsline{toc}{subsection}{Diagrama Eliminación en Entidad}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+    scale=0.75, transform shape,
+    node distance=0.8cm and 0.5cm,
+    box/.style={rectangle, draw=MainBlue, fill=white, minimum height=0.8cm, text centered, font=\footnotesize},
+    head/.style={box, fill=MainBlue!20, font=\footnotesize\bfseries},
+    del/.style={box, draw=red, fill=red!10, dashed, font=\footnotesize\bfseries},
+    ptr/.style={box, fill=gray!10},
+    arrow/.style={-{Stealth}, thick, gray, dotted},
+    newarrow/.style={-{Stealth}, thick, red}
+]
+
+% --- CASO 1: Eliminar al Inicio ---
+\node[anchor=west, font=\bfseries] (t1) at (0, 0) {Caso 1: Eliminacion al Inicio (La entidad a borrar es la primera)};
+\node[head, below=0.8cm of t1.west, anchor=west] (c1) {Cabecera Entidad};
+\node[del, right=1.5cm of c1] (n1) {Entidad a Borrar};
+\node[ptr, right=0cm of n1] (p1) {sig};
+\node[box, right=1.5cm of p1] (s1) {Entidad Siguiente};
+\node[ptr, right=0cm of s1] (ps1) {sig: \dots};
+
+\draw[arrow] (c1.east) -- (n1.west);
+\draw[arrow] (p1.east) -- (s1.west);
+\draw[newarrow] (c1.south) -- +(0,-0.5) -| (s1.south) node[pos=0.25, below, font=\scriptsize, text=red] {EscribeCabEntidades(actual.sig)};
+
+% --- CASO 2: Eliminar en Medio o Final ---
+\node[anchor=west, font=\bfseries] (t2) at (0, -3) {Caso 2: Eliminacion en Medio o Final (Se desconecta con ant.sig)};
+\node[box, below=0.8cm of t2.west, anchor=west] (ant2) {Entidad Anterior};
+\node[ptr, right=0cm of ant2] (pant2) {sig};
+\node[del, right=1.5cm of pant2] (n2) {Entidad a Borrar};
+\node[ptr, right=0cm of n2] (p2) {sig};
+\node[box, right=1.5cm of p2] (s2) {Entidad Siguiente};
+\node[ptr, right=0cm of s2] (ps2) {sig: \dots};
+
+\draw[arrow] (pant2.east) -- (n2.west);
+\draw[arrow] (p2.east) -- (s2.west);
+\draw[newarrow] (pant2.south) -- +(0,-0.5) -| (s2.south) node[pos=0.25, below, font=\scriptsize, text=red] {ant.sig = actual.sig};
+
+\end{tikzpicture}
+\caption{Representacion grafica de los 2 casos de baja logica para la lista de Entidades. El registro no se borra fisicamente, solo se puentea.}
+\label{fig:casos_eliminacion_entidad}
+\end{figure}
 
 \phantomsection
 \addcontentsline{toc}{subsection}{Reescribe Entidad}
@@ -525,6 +630,61 @@ En esencia la función hace reconexión entre la variable
 tanto lo único que cambia esta función son las direcciones a 
 las cuales van apuntando de manera ordenada.
 
+\addcontentsline{toc}{subsection}{Diagrama Insercción en Atributo}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+    scale=0.75, transform shape,
+    node distance=0.8cm and 0.5cm,
+    box/.style={rectangle, draw=MainBlue, fill=white, minimum height=0.8cm, text centered, font=\footnotesize},
+    head/.style={box, fill=MainBlue!20, font=\footnotesize\bfseries},
+    nvo/.style={box, fill=AccentBlue!20, font=\footnotesize\bfseries},
+    ptr/.style={box, fill=gray!10},
+    arrow/.style={-{Stealth}, thick, MainBlue}
+]
+
+% --- CASO 1: Lista Vacia ---
+\node[anchor=west, font=\bfseries] (t1) at (0, 0) {Caso 1: Lista Vacia (activa.atr = -1)};
+\node[head, below=0.8cm of t1.west, anchor=west] (c1) {Cabecera Atributos};
+\node[nvo, right=1.5cm of c1] (n1) {Nuevo Atributo};
+\node[ptr, right=0cm of n1] (p1) {sig: -1};
+\draw[arrow] (c1.east) -- (n1.west);
+
+% --- CASO 2: Al Inicio ---
+\node[anchor=west, font=\bfseries] (t2) at (0, -2) {Caso 2: Insercion al Inicio (Va antes alfabeticamente)};
+\node[head, below=0.8cm of t2.west, anchor=west] (c2) {Cabecera Atributos};
+\node[nvo, right=1cm of c2] (n2) {Nuevo Atributo};
+\node[ptr, right=0cm of n2] (p2) {sig};
+\node[box, right=1.5cm of p2] (e2) {Atributo Existente};
+\node[ptr, right=0cm of e2] (pe2) {sig: \dots};
+\draw[arrow] (c2.east) -- (n2.west);
+\draw[arrow] (p2.east) -- (e2.west);
+
+% --- CASO 3: En Medio ---
+\node[anchor=west, font=\bfseries] (t3) at (0, -4) {Caso 3: Insercion en Medio (Busca su lugar con while)};
+\node[box, below=0.8cm of t3.west, anchor=west] (e3_1) {Atributo Anterior};
+\node[ptr, right=0cm of e3_1] (p3_1) {sig};
+\node[nvo, right=1.2cm of p3_1] (n3) {Nuevo Atributo};
+\node[ptr, right=0cm of n3] (p3_2) {sig};
+\node[box, right=1.2cm of p3_2] (e3_2) {Atributo Siguiente};
+\node[ptr, right=0cm of e3_2] (pe3_2) {sig: \dots};
+\draw[arrow] (p3_1.east) -- (n3.west);
+\draw[arrow] (p3_2.east) -- (e3_2.west);
+
+% --- CASO 4: Al Final ---
+\node[anchor=west, font=\bfseries] (t4) at (0, -6) {Caso 4: Insercion al Final (Va despues de todos)};
+\node[box, below=0.8cm of t4.west, anchor=west] (e4_1) {Ultimo Atributo};
+\node[ptr, right=0cm of e4_1] (p4_1) {sig};
+\node[nvo, right=1.5cm of p4_1] (n4) {Nuevo Atributo};
+\node[ptr, right=0cm of n4] (p4_2) {sig: -1};
+\draw[arrow] (p4_1.east) -- (n4.west);
+
+\end{tikzpicture}
+\caption{Representacion grafica de los 4 casos de insercion logica para la lista de Atributos.}
+\label{fig:casos_insercion_atributo}
+\end{figure}
+
 \phantomsection
 \addcontentsline{toc}{subsection}{Consultar Atributo}
 \subsection*{Consultar Atributo}
@@ -546,8 +706,6 @@ atributo, este nombre se lo pasa a la función
 consola un aviso al usuario, por el contrario si existe, se 
 hace la desconexión.
 
-\newpage
-
 \phantomsection
 \addcontentsline{toc}{subsection}{Elimina Atributo}
 \subsection*{Elimina Atributo}
@@ -561,6 +719,51 @@ poder hacer la desconexión del atributo, no borra nada dentro
 del archivo solo desconecta y conecta con su inmediato 
 siguiente, lo actualiza en el archivo con la función 
 \verb|reescribeAtributo|.
+
+\addcontentsline{toc}{subsection}{Diagrama Eliminación en Atributo}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+    scale=0.75, transform shape,
+    node distance=0.8cm and 0.5cm,
+    box/.style={rectangle, draw=MainBlue, fill=white, minimum height=0.8cm, text centered, font=\footnotesize},
+    head/.style={box, fill=MainBlue!20, font=\footnotesize\bfseries},
+    del/.style={box, draw=red, fill=red!10, dashed, font=\footnotesize\bfseries},
+    ptr/.style={box, fill=gray!10},
+    arrow/.style={-{Stealth}, thick, gray, dotted},
+    newarrow/.style={-{Stealth}, thick, red}
+]
+
+% --- CASO 1: Eliminar al Inicio ---
+\node[anchor=west, font=\bfseries] (t1) at (0, 0) {Caso 1: Eliminacion al Inicio (El atributo a borrar es el primero)};
+\node[head, below=0.8cm of t1.west, anchor=west] (c1) {Cabecera Atributos};
+\node[del, right=1.5cm of c1] (n1) {Atributo a Borrar};
+\node[ptr, right=0cm of n1] (p1) {sig};
+\node[box, right=1.5cm of p1] (s1) {Atributo Siguiente};
+\node[ptr, right=0cm of s1] (ps1) {sig: \dots};
+
+\draw[arrow] (c1.east) -- (n1.west);
+\draw[arrow] (p1.east) -- (s1.west);
+\draw[newarrow] (c1.south) -- +(0,-0.5) -| (s1.south) node[pos=0.25, below, font=\scriptsize, text=red] {activa.atr = actual.sig};
+
+% --- CASO 2: Eliminar en Medio o Final ---
+\node[anchor=west, font=\bfseries] (t2) at (0, -3) {Caso 2: Eliminacion en Medio o Final (Se desconecta con ant.sig)};
+\node[box, below=0.8cm of t2.west, anchor=west] (ant2) {Atributo Anterior};
+\node[ptr, right=0cm of ant2] (pant2) {sig};
+\node[del, right=1.5cm of pant2] (n2) {Atributo a Borrar};
+\node[ptr, right=0cm of n2] (p2) {sig};
+\node[box, right=1.5cm of p2] (s2) {Atributo Siguiente};
+\node[ptr, right=0cm of s2] (ps2) {sig: \dots};
+
+\draw[arrow] (pant2.east) -- (n2.west);
+\draw[arrow] (p2.east) -- (s2.west);
+\draw[newarrow] (pant2.south) -- +(0,-0.5) -| (s2.south) node[pos=0.25, below, font=\scriptsize, text=red] {ant.sig = actual.sig};
+
+\end{tikzpicture}
+\caption{Representacion grafica de los 2 casos de baja logica para la lista de Atributos.}
+\label{fig:casos_eliminacion_atributo}
+\end{figure}
 
 \phantomsection
 \addcontentsline{toc}{subsection}{Reescribe Atributo}
@@ -586,9 +789,397 @@ antiguo con \verb|eliminaAtributo| y después guarda y
 reubica el atributo actualizado utilizando 
 \verb|reescribeAtributo| e \verb|insertaAtributo|.
 
-\newpage
+\phantomsection
+\addcontentsline{toc}{subsection}{Carga Atributos}
+\subsection*{Carga Atributos}
+\textbf{Prototipo:} \verb|int CDiccionario::cargaAtributos();|\\
+Esta función es la encargada de preparar todo para trabajar con 
+los registros realizando tres tareas principales, primero recorre 
+los atributos con un ciclo \verb|while| para ir sumando su 
+\verb|tamano| y definir el \verb|tambloque|, después va guardando 
+cada atributo dentro del arreglo \verb|arrAtributos| e 
+incrementa el contador \verb|nAtributos|, y por último verifica 
+si el atributo es clave primaria comprobando la variable 
+\verb|iskp| para intercambiarlo y ponerlo siempre en la posición 
+0 del arreglo, finalizando con el retorno del número de claves 
+encontradas.
 
-\section{Diagramas}
+\newpage
+\section[Funciones Bloque]{Funciones \hfill \fontsize{14}{17}\selectfont Bloque}
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Menu Datos}
+\subsection*{Menu Datos}
+\textbf{Prototipo:} \verb|void CDiccionario::Menu_Datos();|
+La función \verb|Menu_Datos()| muestra un menú interactivo por 
+consola para administrar las funciones relacionadas a los 
+Bloques o Registros. Funciona por medio de un ciclo 
+\texttt{do-while} y un \texttt{switch-case} que lee la opción 
+del usuario, para ejecutar acciones como dar de alta, consultar, 
+eliminar o modificar registros, permitiendo la 
+navegación hacia la edición de los datos.
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Captura Bloque}
+\subsection*{Captura Bloque}
+\textbf{Prototipo:} \verb|void* CDiccionario::CapturaBloque();|\\
+La función \verb|CapturaBloque()| es la plantilla principal para 
+crear registros de datos, se usa un puntero \verb|void* bloque| 
+usando \verb|malloc| con el tamaño \verb|tambloque|, primero 
+inicializa el apuntador al siguiente, después usa un ciclo 
+\verb|for| para pedirle al usuario los datos dependiendo del 
+tipo de atributo, con esto se crea un bloque nuevo con su 
+información lista.
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Compara Bloques}
+\subsection*{Compara Bloques}
+\textbf{Prototipo:} \verb|float CDiccionario::comparaBloques(void* b1, void *b2);|\\
+Esta función es la encargada de comparar dos bloques apoyándose 
+de la clave primaria que siempre está en el índice 0 del 
+arreglo, primero verifica el tipo de dato, en el caso de ser 
+una cadena hace uso de \verb|strcmp| para compararlos, 
+mientras que para los tipos numéricos enteros o flotantes 
+realiza una resta directa de sus valores, regresando un 
+resultado que sirve para saber si son iguales o decidir cuál va 
+antes.
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Alta Bloque}
+\subsection*{Alta Bloque}
+\textbf{Prototipo:} \verb|void CDiccionario::altaBloque();|\\
+Esta función es la encargada de verificar que todo esté en 
+condiciones para crear un bloque, primero manda a llamar 
+\verb|CapturaBloque| para crear el registro, seguido de esto 
+viene la verificación con la función \verb|buscaBloque| 
+para comprobar que no exista ya esa clave primaria, 
+en caso que no exista usa \verb|escribeBloque| 
+obteniendo su dirección, y finalmente usa \verb|InsertaBloque| 
+para escribir en el archivo.
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Reescribe Bloque}
+\subsection*{Reescribe Bloque}
+\textbf{Prototipo:} \verb|void CDiccionario::reescribeBloque(void* bloque, long dir);|\\
+Esta función se encarga de actualizar los datos de un registro 
+ya existente en el archivo binario. Recibe una dirección y un 
+bloque con la información, usa \verb|fseek| con \verb|SEEK_SET| 
+para posicionarse exactamente en la dirección proporcionada, y 
+\verb|fwrite| para sobreescribir haciendo uso de la variable 
+\verb|tambloque|. Es indispensable para actualizar apuntadores.
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Lee Bloque}
+\subsection*{Lee Bloque}
+\textbf{Prototipo:} \verb|void* CDiccionario::LeeBloque(long dir);|\\
+Se encarga de extraer el bloque del archivo, esta función 
+llega con una dirección, la cual es usada por un 
+\verb|fseek| para moverse dentro del archivo y con un 
+\verb|fread| hacer una copia de tamaño \verb|tambloque| en un 
+espacio de memoria, regresando esa copia para su posterior 
+modificación o consulta.
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Escribe Bloque}
+\subsection*{Escribe Bloque}
+\textbf{Prototipo:} \verb|long CDiccionario::escribeBloque(void* bloque);|\\
+Esta función se encarga de registrar físicamente un nuevo 
+bloque en el archivo, donde se le pasa el puntero de los datos, 
+la función usa un \verb|fseek| con \verb|SEEK_END| para ir 
+hasta el final del último registro del archivo, guarda su 
+dirección con \verb|ftell| y en ese espacio usa 
+un \verb|fwrite| para guardarlo en el archivo, regresando la 
+dirección física.
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Inserta Bloque}
+\subsection*{Inserta Bloque}
+\textbf{Prototipo:} \verb|void CDiccionario::InsertaBloque(void *nvo, long dirnvo);|\\
+Esta función se encarga de enlazar secuencialmente de manera 
+lógica un nuevo bloque, si en el caso que la cabecera 
+\verb|activa.data| sea -1 se enlaza directo, si va al inicio o 
+en medio usa \verb|comparaBloques| dentro de un \verb|while| 
+para hacer una búsqueda y encontrar su lugar exacto.\\newline
+En esencia la función hace reconexión de las direcciones para 
+que quede de manera ordenada, como \verb|escribeBloque| 
+siempre guarda al final, lo único que cambia esta función 
+son los apuntadores lógicos.
+
+\addcontentsline{toc}{subsection}{Diagrama Insercción en Bloque}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+    scale=0.75, transform shape,
+    node distance=0.8cm and 0.5cm,
+    box/.style={rectangle, draw=MainBlue, fill=white, minimum height=0.8cm, text centered, font=\footnotesize},
+    head/.style={box, fill=MainBlue!20, font=\footnotesize\bfseries},
+    nvo/.style={box, fill=AccentBlue!20, font=\footnotesize\bfseries},
+    ptr/.style={box, fill=gray!10},
+    arrow/.style={-{Stealth}, thick, MainBlue}
+]
+
+% --- CASO 1: Lista Vacia ---
+\node[anchor=west, font=\bfseries] (t1) at (0, 0) {Caso 1: Lista Vacia (activa.data = -1)};
+\node[head, below=0.8cm of t1.west, anchor=west] (c1) {Cabecera Bloques};
+\node[nvo, right=1.5cm of c1] (n1) {Nuevo Bloque};
+\node[ptr, right=0cm of n1] (p1) {sig: -1};
+\draw[arrow] (c1.east) -- (n1.west);
+
+% --- CASO 2: Al Inicio ---
+\node[anchor=west, font=\bfseries] (t2) at (0, -2) {Caso 2: Insercion al Inicio (comparaBloques < 0)};
+\node[head, below=0.8cm of t2.west, anchor=west] (c2) {Cabecera Bloques};
+\node[nvo, right=1cm of c2] (n2) {Nuevo Bloque};
+\node[ptr, right=0cm of n2] (p2) {sig};
+\node[box, right=1.5cm of p2] (e2) {Bloque Existente};
+\node[ptr, right=0cm of e2] (pe2) {sig: \dots};
+\draw[arrow] (c2.east) -- (n2.west);
+\draw[arrow] (p2.east) -- (e2.west);
+
+% --- CASO 3: En Medio ---
+\node[anchor=west, font=\bfseries] (t3) at (0, -4) {Caso 3: Insercion en Medio (Busca su lugar segun Clave Primaria)};
+\node[box, below=0.8cm of t3.west, anchor=west] (e3_1) {Bloque Anterior};
+\node[ptr, right=0cm of e3_1] (p3_1) {sig};
+\node[nvo, right=1.2cm of p3_1] (n3) {Nuevo Bloque};
+\node[ptr, right=0cm of n3] (p3_2) {sig};
+\node[box, right=1.2cm of p3_2] (e3_2) {Bloque Siguiente};
+\node[ptr, right=0cm of e3_2] (pe3_2) {sig: \dots};
+\draw[arrow] (p3_1.east) -- (n3.west);
+\draw[arrow] (p3_2.east) -- (e3_2.west);
+
+% --- CASO 4: Al Final ---
+\node[anchor=west, font=\bfseries] (t4) at (0, -6) {Caso 4: Insercion al Final (Va despues de todos)};
+\node[box, below=0.8cm of t4.west, anchor=west] (e4_1) {Ultimo Bloque};
+\node[ptr, right=0cm of e4_1] (p4_1) {sig};
+\node[nvo, right=1.5cm of p4_1] (n4) {Nuevo Bloque};
+\node[ptr, right=0cm of n4] (p4_2) {sig: -1};
+\draw[arrow] (p4_1.east) -- (n4.west);
+
+\end{tikzpicture}
+\caption{Representacion grafica de los 4 casos de insercion logica para la lista de Bloques de Datos.}
+\label{fig:casos_insercion_bloque}
+\end{figure}
+
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Consulta Bloques}
+\subsection*{Consulta Bloques}
+\textbf{Prototipo:} \verb|void CDiccionario::consultaBloques();|\\
+Esta función es la encargada de imprimir en consola los 
+registros que se encuentran dentro del archivo. Para ello, 
+hace uso de \verb|activa.data| para ver dónde inicia la cabecera, 
+imprime los nombres de los atributos, y subsecuentemente hace 
+uso de un ciclo \verb|while (cab != -1)| el cual va imprimiendo 
+cada bloque haciendo las conversiones de tipo correspondientes.
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Busca Bloque}
+\subsection*{Busca Bloque}
+\textbf{Prototipo:} \verb|long CDiccionario::buscaBloque(void *bloquebus);|\\
+La función \verb|buscaBloque| verifica si se encuentra el registro, 
+en caso de que sí lo encuentre dentro del recorrido 
+\verb|while(cab != -1)| comparando con la función 
+\verb|comparaBloques| regresa la dirección en donde se encuentra, 
+en caso contrario regresa un valor de -1, moviéndose siempre 
+leyendo el apuntador siguiente de cada bloque.
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Modifica Bloque}
+\subsection*{Modifica Bloque}
+\textbf{Prototipo:} \verb|void CDiccionario::modificaBloque();|\\
+Esta función permite actualizar los datos de un bloque. 
+Empieza pidiendo los nuevos datos con \verb|CapturaBloque|, 
+luego hace un recorrido para encontrar el bloque actual y 
+desconectarlo enlazando el anterior con el siguiente 
+usando \verb|reescribeBloque|, y después guarda y 
+reubica el nuevo bloque actualizado utilizando 
+\verb|escribeBloque| e \verb|InsertaBloque|.
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Baja Bloque}
+\subsection*{Baja Bloque}
+\textbf{Prototipo:} \verb|void CDiccionario::bajaBloque();|\\
+Esta función empieza llamando a \verb|CapturaBloque| para saber 
+qué clave buscar, para después hacer un recorrido donde hace uso 
+de \verb|while| y \verb|comparaBloques| para encontrar dónde 
+está, usa una variable anterior para poder hacer la desconexión 
+del bloque, no borra nada dentro del archivo solo desconecta y 
+conecta con su inmediato siguiente, actualizando el archivo con 
+\verb|reescribeBloque|.
+
+\addcontentsline{toc}{subsection}{Diagrama Eliminación en Bloque}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+    scale=0.75, transform shape,
+    node distance=0.8cm and 0.5cm,
+    box/.style={rectangle, draw=MainBlue, fill=white, minimum height=0.8cm, text centered, font=\footnotesize},
+    head/.style={box, fill=MainBlue!20, font=\footnotesize\bfseries},
+    del/.style={box, draw=red, fill=red!10, dashed, font=\footnotesize\bfseries},
+    ptr/.style={box, fill=gray!10},
+    arrow/.style={-{Stealth}, thick, gray, dotted},
+    newarrow/.style={-{Stealth}, thick, red}
+]
+
+% --- CASO 1: Eliminar al Inicio ---
+\node[anchor=west, font=\bfseries] (t1) at (0, 0) {Caso 1: Eliminacion al Inicio (El bloque a borrar es el primero)};
+\node[head, below=0.8cm of t1.west, anchor=west] (c1) {Cabecera Bloques};
+\node[del, right=1.5cm of c1] (n1) {Bloque a Borrar};
+\node[ptr, right=0cm of n1] (p1) {sig};
+\node[box, right=1.5cm of p1] (s1) {Bloque Siguiente};
+\node[ptr, right=0cm of s1] (ps1) {sig: \dots};
+
+\draw[arrow] (c1.east) -- (n1.west);
+\draw[arrow] (p1.east) -- (s1.west);
+\draw[newarrow] (c1.south) -- +(0,-0.5) -| (s1.south) node[pos=0.25, below, font=\scriptsize, text=red] {activa.data = sig};
+
+% --- CASO 2: Eliminar en Medio o Final ---
+\node[anchor=west, font=\bfseries] (t2) at (0, -3) {Caso 2: Eliminacion en Medio o Final (Se desconecta el bloque)};
+\node[box, below=0.8cm of t2.west, anchor=west] (ant2) {Bloque Anterior};
+\node[ptr, right=0cm of ant2] (pant2) {sig};
+\node[del, right=1.5cm of pant2] (n2) {Bloque a Borrar};
+\node[ptr, right=0cm of n2] (p2) {sig};
+\node[box, right=1.5cm of p2] (s2) {Bloque Siguiente};
+\node[ptr, right=0cm of s2] (ps2) {sig: \dots};
+
+\draw[arrow] (pant2.east) -- (n2.west);
+\draw[arrow] (p2.east) -- (s2.west);
+\draw[newarrow] (pant2.south) -- +(0,-0.5) -| (s2.south) node[pos=0.25, below, font=\scriptsize, text=red] {*((long*)bloqueant) = sig};
+
+\end{tikzpicture}
+\caption{Representacion grafica de los 2 casos de baja logica para la lista de Bloques.}
+\label{fig:casos_eliminacion_bloque}
+\end{figure}
+
+\newpage
+\section{Diagrama General}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+    scale=0.75, transform shape, % Escala ajustada para que quepa perfecto en la página
+    node distance=0.5cm and 0.5cm,
+    box/.style={rectangle, draw=MainBlue, fill=white, minimum height=0.8cm, text centered, font=\footnotesize},
+    head/.style={box, fill=MainBlue!20, font=\footnotesize\bfseries},
+    ptr/.style={box, fill=gray!10},
+    arrow/.style={-{Stealth}, thick, MainBlue}
+]
+
+% --- CABECERA ---
+\node[head] (cab_text) {Cabecera Entidades};
+\node[ptr, right=0cm of cab_text] (cab_ptr) {Dir: 4};
+
+% =========================================================
+% ENTIDAD 1: ALUMNOS
+% =========================================================
+\node[head, below=1.5cm of cab_text, anchor=west] (e1_nom) {alumnos};
+\node[ptr, right=0cm of e1_nom] (e1_sig) {sig: 100};
+\node[ptr, right=0cm of e1_sig] (e1_atr) {atr: 300};
+\node[ptr, right=0cm of e1_atr] (e1_dat) {data: 692};
+\node[above=0.1cm of e1_nom, font=\scriptsize, color=gray] {Dir: 4};
+\draw[arrow] (cab_ptr.south) -- +(0,-0.5) -| (e1_nom.north);
+
+% --- ATRIBUTOS E1 ---
+\node[head, fill=AccentBlue!20, right=1.5cm of e1_dat] (a1_nom) {clave (KP)};
+\node[ptr, right=0cm of a1_nom] (a1_sig) {sig: 370};
+\node[above=0.1cm of a1_nom, font=\scriptsize, color=gray] {Dir: 300};
+\draw[arrow] (e1_atr.north) -- +(0,0.5) -| (a1_nom.north);
+
+\node[head, fill=AccentBlue!20, right=0.5cm of a1_sig] (a2_nom) {carrera};
+\node[ptr, right=0cm of a2_nom] (a2_sig) {sig: 440};
+\node[above=0.1cm of a2_nom, font=\scriptsize, color=gray] {Dir: 370};
+\draw[arrow] (a1_sig.east) -- (a2_nom.west);
+
+\node[head, fill=AccentBlue!20, right=0.5cm of a2_sig] (a3_nom) {nombre};
+\node[ptr, right=0cm of a3_nom] (a3_sig) {sig: 510};
+\node[above=0.1cm of a3_nom, font=\scriptsize, color=gray] {Dir: 440};
+\draw[arrow] (a2_sig.east) -- (a3_nom.west);
+
+\node[head, fill=AccentBlue!20, right=0.5cm of a3_sig] (a4_nom) {promedio};
+\node[ptr, right=0cm of a4_nom] (a4_sig) {sig: -1};
+\node[above=0.1cm of a4_nom, font=\scriptsize, color=gray] {Dir: 510};
+\draw[arrow] (a3_sig.east) -- (a4_nom.west);
+
+% --- BLOQUES E1 ---
+\node[ptr, fill=orange!20, below=.8cm of a1_nom] (d1_sig) {sig: 784};
+\node[box, right=0cm of d1_sig] (d1_dat) {120 | IC | Maria | 10.0};
+\node[above=0.1cm of d1_sig, font=\scriptsize, color=gray] {Dir: 692};
+\draw[arrow] (e1_dat.south) |- (d1_sig.west);
+
+\node[ptr, fill=orange!20, below=0.8cm of d1_sig] (d2_sig) {sig: 850};
+\node[box, right=0cm of d2_sig] (d2_dat) {300 | ISI | Paco |  6.4 };
+\node[above=0.1cm of d2_sig, font=\scriptsize, color=gray] {Dir: 784};
+\draw[arrow] (d1_sig.south) -- (d2_sig.north);
+
+\node[ptr, fill=orange!20, below=0.8cm of d2_sig] (d3_sig) {sig: -1};
+\node[box, right=0cm of d3_sig] (d3_dat) {900 | IF | Alan |  6.0 };
+\node[above=0.1cm of d3_sig, font=\scriptsize, color=gray] {Dir: 850};
+\draw[arrow] (d2_sig.south) -- (d3_sig.north);
+
+% =========================================================
+% ENTIDAD 2: MAESTROS
+% =========================================================
+\node[head, below=6cm of e1_nom, anchor=west] (e2_nom) {maestros};
+\node[ptr, right=0cm of e2_nom] (e2_sig) {sig: 200};
+\node[ptr, right=0cm of e2_sig] (e2_atr) {atr: 1000};
+\node[ptr, right=0cm of e2_atr] (e2_dat) {data: 1200};
+\node[above=0.1cm of e2_nom, font=\scriptsize, color=gray] {Dir: 100};
+\draw[arrow] (e1_sig.south) -- +(0,-0.5) -| (e2_nom.north);
+
+% --- ATRIBUTOS E2 ---
+\node[head, fill=AccentBlue!20, right=1.5cm of e2_dat] (a2_1_nom) {nomina (KP)};
+\node[ptr, right=0cm of a2_1_nom] (a2_1_sig) {sig: 1050};
+\node[above=0.1cm of a2_1_nom, font=\scriptsize, color=gray] {Dir: 1000};
+\draw[arrow] (e2_atr.north) -- +(0,0.5) -| (a2_1_nom.north);
+
+\node[head, fill=AccentBlue!20, right=0.5cm of a2_1_sig] (a2_2_nom) {nombre};
+\node[ptr, right=0cm of a2_2_nom] (a2_2_sig) {sig: 1100};
+\node[above=0.1cm of a2_2_nom, font=\scriptsize, color=gray] {Dir: 1050};
+\draw[arrow] (a2_1_sig.east) -- (a2_2_nom.west);
+
+\node[head, fill=AccentBlue!20, right=0.5cm of a2_2_sig] (a2_3_nom) {depto};
+\node[ptr, right=0cm of a2_3_nom] (a2_3_sig) {sig: -1};
+\node[above=0.1cm of a2_3_nom, font=\scriptsize, color=gray] {Dir: 1100};
+\draw[arrow] (a2_2_sig.east) -- (a2_3_nom.west);
+
+% --- BLOQUES E2 ---
+\node[ptr, fill=orange!20, below=1cm of a2_1_nom] (d2_1_sig) {sig: 1300};
+\node[box, right=0cm of d2_1_sig] (d2_1_dat) {1001 | Juan | Sistemas};
+\node[above=0.1cm of d2_1_sig, font=\scriptsize, color=gray] {Dir: 1200};
+\draw[arrow] (e2_dat.south) |- (d2_1_sig.west);
+
+\node[ptr, fill=orange!20, below=0.8cm of d2_1_sig] (d2_2_sig) {sig: -1};
+\node[box, right=0cm of d2_2_sig] (d2_2_dat) {2050 | Ana  | Matematicas};
+\node[above=0.1cm of d2_2_sig, font=\scriptsize, color=gray] {Dir: 1300};
+\draw[arrow] (d2_1_sig.south) -- (d2_2_sig.north);
+
+% =========================================================
+% ENTIDAD 3: MATERIAS (Lista vacía de datos)
+% =========================================================
+\node[head, below=5cm of e2_nom, anchor=west] (e3_nom) {materias};
+\node[ptr, right=0cm of e3_nom] (e3_sig) {sig: -1};
+\node[ptr, right=0cm of e3_sig] (e3_atr) {atr: 1500};
+\node[ptr, right=0cm of e3_atr] (e3_dat) {data: -1};
+\node[above=0.1cm of e3_nom, font=\scriptsize, color=gray] {Dir: 200};
+\draw[arrow] (e2_sig.south) -- +(0,-0.5) -| (e3_nom.north);
+
+% --- ATRIBUTOS E3 ---
+\node[head, fill=AccentBlue!20, right=1.5cm of e3_dat] (a3_1_nom) {codigo (KP)};
+\node[ptr, right=0cm of a3_1_nom] (a3_1_sig) {sig: 1550};
+\node[above=0.1cm of a3_1_nom, font=\scriptsize, color=gray] {Dir: 1500};
+\draw[arrow] (e3_atr.north) -- +(0,0.5) -| (a3_1_nom.north);
+
+\node[head, fill=AccentBlue!20, right=0.5cm of a3_1_sig] (a3_2_nom) {creditos};
+\node[ptr, right=0cm of a3_2_nom] (a3_2_sig) {sig: -1};
+\node[above=0.1cm of a3_2_nom, font=\scriptsize, color=gray] {Dir: 1550};
+\draw[arrow] (a3_1_sig.east) -- (a3_2_nom.west);
+
+\end{tikzpicture}
+\caption{Diagrama 1: Arquitectura del diccionario mostrando la lista principal de Entidades y cómo cada registro conecta con sus respectivas listas de Atributos y Bloques de datos. El mapa ilustra la navegacion fisica entre direcciones y punteros.}
+\label{fig:diagrama_principal}
+\addcontentsline{toc}{subsection}{Diagrama 1: Arquitectura del diccionario}
+\end{figure}
 
 \newpage
 \section{Archivo}
