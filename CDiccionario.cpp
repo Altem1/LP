@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
+#include <iomanip>
 #include "CDiccionario.h"
 
 using namespace std;
@@ -402,10 +403,11 @@ void CDiccionario::insertaEntidad(Entidad nvo, long dir)
 void CDiccionario::ConsultaEntidades()
 {
     long cab=getcabeceraEntidades();//Obtiene la cabecera de las entidades
+    cout<<left <<setw(15) <<"Entidad" <<setw(10) <<"Atributos" <<setw(10) <<"Datos" <<setw(10) <<"siguiente\n";
     while(cab!=-1)
     {
       Entidad nvo=leeEntidad(cab);//lee su informacion
-      printf("%s|%ld|%ld|%ld|\n",nvo.nombre,nvo.atr,nvo.data,nvo.sig);//Imprime una por una
+      cout<< left <<setw(15) <<nvo.nombre <<setw(10) <<nvo.atr <<setw(10) <<nvo.data <<setw(10) <<nvo.sig <<"\n";//Imprime una por una
       cab=nvo.sig;
     }
 }
@@ -617,9 +619,10 @@ long CDiccionario::BuscarAtributo(char *atr){
 void CDiccionario::consultarAtributo(){
     Atributo nvo;
     long cab = activa.atr;
+      cout<<left <<setw(15) <<"Nombre" <<setw(10) <<"Tipo" <<setw(10) <<"Tamano" <<setw(10) <<"iskp"<<setw(10)<<"Nulo"<<setw(10)<<"Descripcion\n";
     while(cab != -1){
         nvo = leeAtributo(cab);
-        printf("%s|%d|%d|%c|%c|%s|\n", nvo.nombre, nvo.tipo, nvo.tamano, nvo.iskp, nvo.null, nvo.descripcion);
+        cout<< left <<setw(15) <<nvo.nombre <<setw(10) <<nvo.tipo <<setw(10) <<nvo.tamano <<setw(10) <<nvo.iskp <<setw(10)<<nvo.null<<setw(10)<<nvo.descripcion<<"\n";
         cab = nvo.sig;
     }
 }
@@ -957,11 +960,11 @@ int CDiccionario::cargaAtributos()
    //Muestra los registros almacenados
 void CDiccionario::consultaBloques()
 {
-    cout<<"siguiente\t\t";
+    cout<<left<<setw(11)<<"siguiente";
     //Muestra el nombre de los atributos
     for(int i=0; i<nAtributos;i++)
     {
-        cout<< arrAtributos[i].nombre<<"\t";
+        cout<<left<<setw(15)<< arrAtributos[i].nombre;
     }
     cout<<endl;
     long cab=activa.data;
@@ -970,24 +973,24 @@ void CDiccionario::consultaBloques()
     while(cab!=-1 && contador<100)
     {
        void *bloque=LeeBloque(cab);
-        cout<<*((long*)bloque)<<"\t\t";
+        cout<<left<<setw(11)<<*((long*)bloque);
         long desp =sizeof(long);
         for(int i=0;i<nAtributos;i++)
         {
            switch (arrAtributos[i].tipo)
            {
-               case 1: cout<<((char*)bloque+desp);
+               case 1: cout<<left<<setw(11)<<((char*)bloque+desp);
                        break;
-               case 2:cout<< *((int*)((char*)bloque+desp));
+               case 2:cout<<left<<setw(11)<<*((int*)((char*)bloque+desp));
                       break;
-               case 3:cout<<*((float*)((char*)bloque+desp));
+               case 3:cout<<left<<setw(11)<<*((float*)((char*)bloque+desp));
                       break;
-               case 4:cout<<*((double*)((char*)bloque+desp));
+               case 4:cout<<left<<setw(11)<<*((double*)((char*)bloque+desp));
                       break;
-               case 5:cout<<*((long*)((char*)bloque+desp));
+               case 5:cout<<left<<setw(11)<<*((long*)((char*)bloque+desp));
                       break;
            }
-           cout<<"\t\t";
+           cout<<"\t";
            desp+=arrAtributos[i].tamano;
         }
           cout<<endl;
@@ -1031,9 +1034,9 @@ long CDiccionario::buscaBloque(void *bloquebus)
 }
 //modifica un bloque de la lista de bloques
 void CDiccionario::modificaBloque()
-{   //captura datos del bloque a modificar
-    cout<<"\n Ingresa los datos del registro que se desea modificar\n";
-    void *bloque=CapturaBloque();
+{    //captura datos del bloque a modificar
+     void* bloque;
+     bloque = pideClaveBloque();
     //obtiene la direccion de la cabesera de bloques
     long cab=activa.data;
     long ant=-1;
@@ -1089,7 +1092,12 @@ void CDiccionario::modificaBloque()
 //Elimina un bloque
 void CDiccionario::bajaBloque()
 {
-    void *bloque=CapturaBloque();//Capturamos el bloque a eliminar
+    void*Bloque;
+    Bloque=pideClaveBloque();
+    eliminaBloque(Bloque);
+}
+void CDiccionario::eliminaBloque(void*bloque)
+{
     long cab=activa.data;//conseguimos la cabecera de la lista
     long ant=-1;
     //Recorremos la lista
@@ -1125,4 +1133,39 @@ void CDiccionario::bajaBloque()
     //Si no se encuentra el bloque
     cout<<"\n Bloque no encontrado \n";
     free(bloque);
+}
+void *CDiccionario::pideClaveBloque()
+{
+    void *bloque=malloc(tambloque);
+    cout<<"Ingrese"<<arrAtributos[0].nombre<<":";
+    switch(arrAtributos[0].tipo)
+    {
+    case 1:
+        {
+        cin.ignore();
+        cin.getline((char*)bloque+sizeof(long),arrAtributos[0].tamano);
+        break;
+        }
+    case 2:
+        {
+            cin>>*((int*)((char*)bloque+sizeof(long)));
+            break;
+        }
+    case 3:
+        {
+            cin>>*((float*)((char*)bloque+sizeof(long)));
+            break;
+        }
+    case 4:
+        {
+            cin>>*((double*)((char*)bloque+sizeof(long)));
+            break;
+        }
+    case 5:
+        {
+            cin>>*((long*)((char*)bloque+sizeof(long)));
+            break;
+        }
+    }
+    return bloque;
 }

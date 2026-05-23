@@ -66,6 +66,10 @@ public:
     long buscaBloque(void *bloquebus);
     void modificaBloque();
     void bajaBloque();
+    void eliminaBloque(void*bloque);
+    void *pideClaveBloque();
+
+
 
 
 
