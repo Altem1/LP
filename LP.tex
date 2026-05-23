@@ -301,6 +301,38 @@ public:
 \end{lstlisting}
 
 \newpage
+\section[Funciones Archivo]{Funciones \hfil \fontsize{14}{17}\selectfont Archivo}
+\phantomsection
+\addcontentsline{toc}{subsection}{Menu}
+\subsection*{Menu}
+\textbf{Prototipo:} \verb|void CDiccionario::menu();|\\
+La función \verb|menu()| simplemente muestra en consola las opciones 
+principales del sistema, imprimiendo las opciones para crear un archivo nuevo, 
+abrir un archivo existente o salir del programa, sirviendo como interfaz 
+inicial para el usuario.
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Nuevo}
+\subsection*{Nuevo}
+\textbf{Prototipo:} \verb|void CDiccionario::Nuevo();|\\
+Esta función es la encargada de crear un archivo binario desde cero, primero 
+pide al usuario el nombre del archivo, después intenta abrirlo con 
+\verb|rb| para verificar que no exista previamente y evitar sobreescribirlo, 
+en caso de que no exista lo crea con \verb|wb+|, inicializa la cabecera de 
+entidades escribiendo un -1 al inicio del archivo, y finalmente redirige al 
+usuario llamando a \verb|Menu_Entidades()|.
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Abrir}
+\subsection*{Abrir}
+\textbf{Prototipo:} \verb|void CDiccionario::abrir();|\\
+Esta función permite cargar un diccionario de datos previamente creado, 
+solicita al usuario el nombre del archivo y hace uso de \verb|fopen| con la 
+instrucción \verb|rb+| para lectura y escritura, verifica si el archivo es 
+nulo para avisar que no existe, en caso contrario confirma su apertura y 
+manda a llamar a la función \verb|Menu_Entidades()| para comenzar a trabajar.
+
+\newpage
 \section[Funciones Entidad]{Funciones \hfill \fontsize{14}{17}\selectfont Entidad}
 
 \phantomsection
@@ -1052,6 +1084,28 @@ conecta con su inmediato siguiente, actualizando el archivo con
 \label{fig:casos_eliminacion_bloque}
 \end{figure}
 
+\phantomsection
+\addcontentsline{toc}{subsection}{Pide Clave Bloque}
+\subsection*{Pide Clave Bloque}
+\textbf{Prototipo:} \verb|void *CDiccionario::pideClaveBloque();|\\
+Esta función se encarga de crear un bloque temporal exclusivo para la 
+búsqueda, primero pide memoria con \verb|malloc|, después imprime en pantalla 
+el nombre del atributo que es la clave primaria apoyándose de 
+\verb|arrAtributos|, y con un \verb|switch| lee desde el teclado el valor 
+dependiendo de su tipo para guardarlo en el desplazamiento correcto, 
+regresando este bloque para ser usado por funciones de búsqueda o baja.
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Elimina Bloque}
+\subsection*{Elimina Bloque}
+\textbf{Prototipo:} \verb|void CDiccionario::eliminaBloque(void* bloque);|\\
+Esta función realiza la baja lógica de un registro de datos, recibe el 
+bloque con la clave a buscar y hace un recorrido con un ciclo \verb|while| 
+comparando con \verb|comparaBloques|, cuando encuentra el registro deseado 
+hace la desconexión enlazando el bloque anterior con el siguiente y guardando 
+los cambios con \verb|reescribeBloque|, actualizando la cabecera si es el 
+primer elemento.
+
 \newpage
 \section{Diagrama General}
 
@@ -1182,10 +1236,114 @@ conecta con su inmediato siguiente, actualizando el archivo con
 \end{figure}
 
 \newpage
-\section{Archivo}
+\phantomsection
+\addcontentsline{toc}{subsection}{Cabecera Entidad}
+\subsection*{Cabecera Entidad}
+Después de que el archivo es creado con la función \verb|void CDiccionario::Nuevo();|
+y que el usuario agrega la primera entidad por medio de las funciones 
+\verb|altaEntidad| e \verb|insertaEntidad|, el programa al detectar que está 
+vacío va y crea en el primer espacio, podríamos decir en la dirección 0, 
+la cabecera de un tamaño específico de \verb|sizeof(long)|, esta cabecera 
+siempre se almacena al inicio para que apenas se abra el archivo tener acceso 
+directo a la lista.
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Eliminación Lógica (Baja)}
+\subsection*{Eliminación Lógica (Baja)}
+Cuando el usuario decide borrar un registro usando las funciones de baja, 
+el archivo no reduce su tamaño físico ni borra la información, 
+simplemente hace una desconexión lógica de los apuntadores enlazando el 
+nodo anterior con el siguiente, esto hace que el dato se vuelva inaccesible 
+y quede "puenteado" dentro del documento.\\
+Ademas cuando el archivo ya tiene información, no es posible hacer un borrado
+ya que esto puede alterar direcciones y romper el archivo
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+    scale=0.65, transform shape,
+    node distance=0.8cm and 0.4cm,
+    box/.style={rectangle, draw=MainBlue, fill=white, minimum height=0.8cm, text centered, font=\footnotesize},
+    head/.style={box, fill=MainBlue!20, font=\footnotesize\bfseries},
+    del/.style={box, draw=red, fill=red!10, dashed, font=\footnotesize\bfseries},
+    ptr/.style={box, fill=gray!10},
+    arrow/.style={-{Stealth}, thick, gray, dotted},
+    newarrow/.style={-{Stealth}, thick, red},
+    normalarrow/.style={-{Stealth}, thick, MainBlue}
+]
+
+% --- CASO 1: Eliminar al Inicio (Lista de 5) ---
+\node[anchor=west, font=\bfseries] (t1) at (0, 0) {Caso 1: Eliminacion al Inicio (La entidad a borrar es la primera de la lista)};
+\node[head, below=0.8cm of t1.west, anchor=west] (c1) {Cabecera};
+\node[del, right=0.6cm of c1] (n1_1) {Entidad 1}; \node[ptr, right=0cm of n1_1] (p1_1) {sig};
+\node[box, right=0.6cm of p1_1] (n1_2) {Entidad 2}; \node[ptr, right=0cm of n1_2] (p1_2) {sig};
+\node[box, right=0.6cm of p1_2] (n1_3) {Entidad 3}; \node[ptr, right=0cm of n1_3] (p1_3) {sig};
+\node[box, right=0.6cm of p1_3] (n1_4) {Entidad 4}; \node[ptr, right=0cm of n1_4] (p1_4) {sig};
+\node[box, right=0.6cm of p1_4] (n1_5) {Entidad 5}; \node[ptr, right=0cm of n1_5] (p1_5) {sig: -1};
+
+% Flechas Caso 1
+\draw[arrow] (c1.east) -- (n1_1.west);
+\draw[arrow] (p1_1.east) -- (n1_2.west);
+\draw[normalarrow] (p1_2.east) -- (n1_3.west);
+\draw[normalarrow] (p1_3.east) -- (n1_4.west);
+\draw[normalarrow] (p1_4.east) -- (n1_5.west);
+\draw[newarrow] (c1.south) -- +(0,-0.6) -| (n1_2.south) node[pos=0.25, below, font=\scriptsize, text=red] {EscribeCabEntidades(actual.sig)};
+
+% --- CASO 2: Eliminar en Medio (Lista de 5) ---
+\node[anchor=west, font=\bfseries] (t2) at (0, -2.5) {Caso 2: Eliminacion en Medio (Se desconecta la Entidad 3, manteniendo la cadena)};
+\node[head, below=0.8cm of t2.west, anchor=west] (c2) {Cabecera};
+\node[box, right=0.6cm of c2] (n2_1) {Entidad 1}; \node[ptr, right=0cm of n2_1] (p2_1) {sig};
+\node[box, right=0.6cm of p2_1] (n2_2) {Entidad 2}; \node[ptr, right=0cm of n2_2] (p2_2) {sig};
+\node[del, right=0.6cm of p2_2] (n2_3) {Entidad 3}; \node[ptr, right=0cm of n2_3] (p2_3) {sig};
+\node[box, right=0.6cm of p2_3] (n2_4) {Entidad 4}; \node[ptr, right=0cm of n2_4] (p2_4) {sig};
+\node[box, right=0.6cm of p2_4] (n2_5) {Entidad 5}; \node[ptr, right=0cm of n2_5] (p2_5) {sig: -1};
+
+% Flechas Caso 2
+\draw[normalarrow] (c2.east) -- (n2_1.west);
+\draw[normalarrow] (p2_1.east) -- (n2_2.west);
+\draw[arrow] (p2_2.east) -- (n2_3.west);
+\draw[arrow] (p2_3.east) -- (n2_4.west);
+\draw[normalarrow] (p2_4.east) -- (n2_5.west);
+\draw[newarrow] (p2_2.south) -- +(0,-0.6) -| (n2_4.south) node[pos=0.25, below, font=\scriptsize, text=red] {ant.sig = actual.sig};
+
+\end{tikzpicture}
+\label{fig:casos_eliminacion_entidad}
+\addcontentsline{toc}{subsection}{Diagrama 5: Eliminacion en Entidades}
+\end{figure}
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Funciones de Archivo Binario}
+\subsection*{Funciones de Archivo Binario}
+Para lograr todo este manejo de datos el sistema se apoya de las siguientes 
+funciones nativas de C++: \newline \par
+\campo{fopen:}{Se encarga de abrir el archivo físico en modos binarios como \texttt{rb} (lectura) o \texttt{wb+} (escritura).}
+\campo{fclose:}{Cierra el documento para liberar la memoria y guardar los cambios de manera segura.}
+\campo{fseek:}{Es la función encargada de mover el puntero o cursor a una dirección exacta dentro del archivo.}
+\campo{ftell:}{Regresa la posición o dirección física exacta en la que se encuentra el cursor en ese momento.}
+\campo{fwrite:}{Se encarga de escribir o guardar los bloques de datos directamente en el disco.}
+\campo{fread:}{Hace la operación inversa, leyendo un bloque de bytes desde el archivo para pasarlo a la memoria.}
+
 
 \newpage
-\section{Clave primaria}
+\section{Clave Primaria}
+\subsection*{¿Qué es una Clave Primaria?}
+Una clave primaria en base de datos es aquella que se encarga de la 
+identificación única de ciertos registros, como puede ser el ID de un juego o 
+la clave de la INE; estos valores dentro de la base de datos nunca se deben 
+repetir ya que no pueden existir dos entidades o registros iguales, 
+permitiendo su fácil localización e identificación. 
+A su vez, estas claves primarias son fundamentales para relacionarse 
+con otras tablas, convirtiéndose así en llaves foráneas.
+
+\subsection*{Manejo de la Clave Primaria en el Sistema}
+Para gestionar esta regla de validación dentro de nuestro archivo binario, 
+el sistema se apoya de las siguientes funciones y lógicas:
+
+\campo{Funciones de Captura:}{La función \texttt{CapturaAt} es la encargada de preguntarle al usuario si el nuevo atributo será clave primaria, guardando el indicador en la variable \texttt{iskp}. Por otro lado, \texttt{CapturaBloque} y \texttt{pideClaveBloque} son las funciones responsables de pedirle al usuario el valor numérico o de texto real para esa clave.}
+
+\campo{Función que la compara:}{La función \texttt{comparaBloques} es la encargada de evaluar exclusivamente la clave primaria de dos registros distintos, determinando cuál va antes o después usando \texttt{strcmp} o restas aritméticas según su tipo de dato, siendo esencial para poder insertar y buscar en orden.}
+
+\campo{Validación (existeKP) e Índice 0:}{Toda esta lógica central esta en la función \texttt{cargaAtributos}. Mientras lee los atributos de la entidad, utiliza un contador \texttt{kp} para validar que exista exactamente una sola clave primaria (cumpliendo la función lógica de \textit{existeKP}); si encuentra cero o más de una, manda un error. Además, al encontrarla hace un intercambio de variables en memoria para asegurar que la clave primaria siempre se almacene y fije en el \textbf{índice 0} del arreglo \texttt{arrAtributos}, garantizando así que \texttt{comparaBloques} y demás funciones siempre evalúen el identificador correcto.}
 
 \newpage
 \section{Conclusiones}
