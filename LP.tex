@@ -1343,7 +1343,7 @@ el sistema se apoya de las siguientes funciones y lógicas:
 
 \campo{Función que la compara:}{La función \texttt{comparaBloques} es la encargada de evaluar exclusivamente la clave primaria de dos registros distintos, determinando cuál va antes o después usando \texttt{strcmp} o restas aritméticas según su tipo de dato, siendo esencial para poder insertar y buscar en orden.}
 
-\campo{Validación (existeKP) e Índice 0:}{Toda esta lógica central esta en la función \texttt{cargaAtributos}. Mientras lee los atributos de la entidad, utiliza un contador \texttt{kp} para validar que exista exactamente una sola clave primaria (cumpliendo la función lógica de \textit{existeKP}); si encuentra cero o más de una, manda un error. Además, al encontrarla hace un intercambio de variables en memoria para asegurar que la clave primaria siempre se almacene y fije en el \textbf{índice 0} del arreglo \texttt{arrAtributos}, garantizando así que \texttt{comparaBloques} y demás funciones siempre evalúen el identificador correcto.}
+\campo{Validación (existeKP) e Índice 0:}{Toda esta lógica esta en la función \texttt{cargaAtributos}. Mientras lee los atributos de la entidad, utiliza un contador \texttt{kp} para validar que exista exactamente una sola clave primaria (cumpliendo la función lógica de \textit{existeKP}); si encuentra cero o más de una, manda un error. Además, al encontrarla hace un intercambio de variables en memoria para asegurar que la clave primaria siempre se almacene y fije en el \textbf{índice 0} del arreglo \texttt{arrAtributos}, garantizando así que \texttt{comparaBloques} y demás funciones siempre evalúen el identificador correcto.}
 
 \newpage
 \section{Conclusiones}
