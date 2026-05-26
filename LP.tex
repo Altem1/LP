@@ -126,7 +126,7 @@
             388531 Alvarez Puente Alan Antonio
         \end{tabular} \\ [0.5cm]
         \textbf{\color{MainBlue} DOCENTE:} \\
-        [0.5cm] % Espacio listo para que pongas el nombre del profe
+            JUAN JOSE ACOSTA ESPINOZA \\[0.5cm] % Espacio listo para que pongas el nombre del profe
         \textbf{\color{MainBlue} CICLO ESCOLAR:} \\
         2025 - 2026
     \end{minipage}
@@ -257,7 +257,7 @@ private:
     long dir;
     int nAtributos;
     long tambloque;
-
+    Atributo arrAtributos[50];
     char nombreArchivo[50];
 public:
     //constructor
@@ -278,6 +278,8 @@ public:
     long EliminaEntidad(char nombre[30]);
     void reescribeEntidad(long dir, Entidad ant);
     void modificaEntidad();
+    void preguntaEntidad();
+
 
     //Atributos
     void Menu_Atributos();
@@ -292,9 +294,28 @@ public:
     long EscribeAtributo(Atributo ant);
     void reescribeAtributo(long dir, Atributo atr);
     void BajaAtributo();
+    int cargaAtributos();
+
 
     //Datos
     void Menu_Datos();
+    void* CapturaBloque();
+    float comparaBloques(void*b1,void*b2);
+    void altaBloque();
+    void reescribeBloque(void* bloque, long dir);
+    void* LeeBloque(long dir);
+    long escribeBloque(void* bloque);
+    void InsertaBloque(void *nvo, long dirnvo);
+    void consultaBloques();
+    long buscaBloque(void *bloquebus);
+    void modificaBloque();
+    void bajaBloque();
+    void eliminaBloque(void*bloque);
+    void *pideClaveBloque();
+
+
+
+
 
     //Principal
     void menu();
@@ -303,11 +324,11 @@ public:
 
 };
 
-#endif
+#endif // CDICCIONARIO_H_INC
 \end{lstlisting}
 
 \newpage
-\section[Funciones Archivo]{Funciones \hfil \fontsize{14}{17}\selectfont Archivo}
+\section[Funciones Entidad]{Funciones \hfill \fontsize{14}{17}\selectfont Archivo}
 \phantomsection
 \addcontentsline{toc}{subsection}{Menu}
 \subsection*{Menu}
@@ -1378,7 +1399,6 @@ funciones nativas de C++: \newline \par
 \phantomsection
 \addcontentsline{toc}{subsection}{3. Simulación: insertaEntidad}
 \subsection*{3. Simulación: insertaEntidad (Conexión Lógica)}
-\textbf{Qué hace:} Evalúa dónde conectar el puntero \verb|sig| para mantener orden alfabético (\verb|strcmp|).\\
 \textbf{Entrada:} Entidad y su dirección física. \\
 \textbf{Salida:} Punteros actualizados en el archivo.
 
@@ -1430,7 +1450,6 @@ Va en Medio/Fin & Maestros (112) & \verb|Maestros > Alumnos| \newline & \verb|Al
 \phantomsection
 \addcontentsline{toc}{subsection}{1. Simulación: CapturaAt}
 \subsection*{1. Simulación: CapturaAt}
-\textbf{Qué hace:} Inicializa la estructura del atributo en memoria RAM y pide sus características.\\
 \textbf{Entrada:} Datos capturados por el usuario (nombre, tipo, longitud, etc.).\\
 \textbf{Salida:} \verb|struct Atributo| listo para ser escrito.
 
@@ -1454,7 +1473,6 @@ Va en Medio/Fin & Maestros (112) & \verb|Maestros > Alumnos| \newline & \verb|Al
 \phantomsection
 \addcontentsline{toc}{subsection}{2. Simulación: EscribeAtributo}
 \subsection*{2. Simulación: EscribeAtributo}
-\textbf{Qué hace:} Almacena físicamente el atributo al final del archivo binario (\verb|SEEK_END|).\\
 \textbf{Entrada:} \verb|struct Atributo|.\\
 \textbf{Salida:} Dirección física asignada por \verb|ftell|.
 
@@ -1478,7 +1496,6 @@ Va en Medio/Fin & Maestros (112) & \verb|Maestros > Alumnos| \newline & \verb|Al
 \phantomsection
 \addcontentsline{toc}{subsection}{3. Simulación: insertaAtributo}
 \subsection*{3. Simulación: insertaAtributo (Conexión Lógica)}
-\textbf{Qué hace:} Evalúa dónde conectar el puntero \verb|sig| para mantener orden alfabético (\verb|strcmp|).\\
 \textbf{Entrada:} Atributo nuevo y su dirección física. \\
 \textbf{Salida:} Punteros lógicos (\verb|sig|) actualizados.
 
@@ -1512,7 +1529,6 @@ Va en Medio/Fin & Maestros (112) & \verb|Maestros > Alumnos| \newline & \verb|Al
 \begin{tabular}{|c|c|c|c|}
 \hline
 \rowcolor{MainBlue}
-\textcolor{white}{\textbf{Iteración (\texttt{cab})}} & \textcolor{white}{\textbf{\texttt{leeAtributo(cab)}}} & \textcolor{white}{\textbf{Pantalla (Nombre)}} & \textcolor{white}{\textbf{Siguiente \texttt{cab} (\texttt{actual.sig})}} \\
 \hline
 1 (\verb|cab| = 374) & Lee dir 374 & carrera & \textbf{300} \\
 \hline
@@ -1531,7 +1547,6 @@ Va en Medio/Fin & Maestros (112) & \verb|Maestros > Alumnos| \newline & \verb|Al
 \phantomsection
 \addcontentsline{toc}{subsection}{1. Simulación: CapturaBloque}
 \subsection*{1. Simulación: CapturaBloque}
-\textbf{Qué hace:} Pide memoria dinámica genérica (\verb|void*|) y empaqueta los datos usando desplazamientos.\\
 \textbf{Entrada:} Datos capturados por el usuario según los tipos del arreglo de atributos.\\
 \textbf{Salida:} Puntero \verb|void*| con la información estructurada.
 
@@ -1555,7 +1570,6 @@ Va en Medio/Fin & Maestros (112) & \verb|Maestros > Alumnos| \newline & \verb|Al
 \phantomsection
 \addcontentsline{toc}{subsection}{2. Simulación: escribeBloque}
 \subsection*{2. Simulación: escribeBloque}
-\textbf{Qué hace:} Almacena físicamente el bloque genérico al final del archivo binario (\verb|SEEK_END|).\\
 \textbf{Entrada:} \verb|void* bloque| y \verb|tambloque|.\\
 \textbf{Salida:} Dirección física asignada por \verb|ftell|.
 
@@ -1579,7 +1593,6 @@ Va en Medio/Fin & Maestros (112) & \verb|Maestros > Alumnos| \newline & \verb|Al
 \phantomsection
 \addcontentsline{toc}{subsection}{3. Simulación: InsertaBloque}
 \subsection*{3. Simulación: InsertaBloque (Conexión Lógica)}
-\textbf{Qué hace:} Evalúa dónde conectar el puntero \verb|sig| para mantener orden numérico/alfabético usando \verb|comparaBloques| sobre la Clave Primaria.\\
 \textbf{Entrada:} Bloque nuevo y su dirección física. \\
 \textbf{Salida:} Punteros lógicos (\verb|sig|) actualizados en el archivo.
 
@@ -1601,10 +1614,11 @@ Va en Medio/Fin & Maestros (112) & \verb|Maestros > Alumnos| \newline & \verb|Al
 \end{tabular}
 \end{table}
 
+\newpage
+
 \phantomsection
 \addcontentsline{toc}{subsection}{4. Simulación: consultaBloques}
 \subsection*{4. Simulación: consultaBloques}
-\textbf{Qué hace:} Recorre la lista de bloques saltando por las direcciones en el archivo, extrayendo datos con desplazamientos y casteos para imprimir.\\
 \textbf{Entrada:} \verb|activa.data| = 692.\\
 \textbf{Salida:} Impresión en consola de todos los registros de la entidad.
 
@@ -1652,5 +1666,51 @@ el sistema se apoya de las siguientes funciones y lógicas:
 
 \newpage
 \section{Conclusiones}
+Este proyecto fue una representación en crudo de cómo funcionan 
+las bases de datos primitivas en un lenguaje de bajo nivel. 
+Nos ayudó a comprender de mejor manera cómo funciona la memoria 
+estática (\textit{Archivos}) y cómo esta se va cargando 
+dinámicamente dentro de nuestra memoria RAM. 
+Es importante tener conocimiento de esto, ya que dentro del 
+desarrollo real, como por ejemplo en varios juegos indie, 
+muchas veces guardan las partidas dentro de archivos binarios; 
+de igual manera, los motores de bases de datos operan bajo estos 
+mismos principios, aunque de una forma un tanto diferente y 
+optimizada.
 
+Por otro lado, descubrimos que el manejo del tipo de dato 
+\verb|void*| de alguna forma puede usarse para ofuscar 
+información dentro de los archivos, siendo de único conocimiento 
+del creador del sistema o requiriendo herramientas especializadas 
+para poder traducir y estructurar estos datos en crudo.
+
+Durante las varias fases de desarrollo vimos y aprendimos cómo 
+es ir montando un sistema desde cero usando únicamente las bases 
+de un lenguaje de bajo nivel. Todo este conocimiento puede ser 
+aplicado en la creación de software para componentes de bajos 
+recursos o en sistemas basados en redes privadas para lograr una 
+mayor velocidad. Con unas cuantas adiciones, este modelo base 
+se convertiría en un sistema sumamente rápido y en gran parte 
+confiable.
+
+Otro de los aprendizajes importantes fue comprender la diferencia 
+entre el espacio físico y el lógico en un medio de almacenamiento. 
+Implementar la eliminación lógica nos hizo darnos cuenta de que, 
+en los sistemas a bajo nivel, borrar un registro no significa 
+destruir su información en el disco, sino simplemente desenlazar 
+sus punteros para puentearlo. Esto nos dio una perspectiva muy 
+clara de por qué las bases de datos reales necesitan rutinas de 
+mantenimiento (como el compactado) para recuperar el espacio 
+'muerto' que se va acumulando.
+
+Finalmente, concluimos que el uso de la clave primaria 
+(\textit{Primary Key}) es una parte vital en la creación de 
+bases de datos. Ésta sirve para la comunicación y relación entre 
+tablas dentro de una misma base, y es el único parámetro que no 
+desaparece en la normalización de los datos. Es una pieza 
+fundamental; el hecho de que solo exista una llave por registro 
+ayuda a localizarlos rápidamente y a mantener un orden estricto, 
+logrando que sean de fácil acceso, de fácil modificación y de 
+fácil borrado, tanto en este sistema que acabamos de desarrollar 
+como en aquellos motores profesionales que se usan en la vida real.
 \end{document}
