@@ -7,7 +7,7 @@
 
 \usepackage{tikz}
 \usetikzlibrary{positioning,arrows.meta}
-\usepackage[spanish]{babel}
+\usepackage[spanish,shorthands=off]{babel}
 \usepackage[margin=2.5cm, headheight=20pt]{geometry} % Margen 2.5 cm
 \usepackage{setspace}
 \singlespacing % Interlineado sencillo forzado
@@ -15,6 +15,7 @@
 \usepackage[table]{xcolor} 
 \usepackage{tikz}
 \usepackage{fancyhdr}
+\usepackage{float}
 \usepackage[most]{tcolorbox}
 \usepackage[hidelinks]{hyperref}
 \usepackage{titlesec}
@@ -91,22 +92,27 @@
     \end{tikzpicture}
 
     \centering
-    \begin{minipage}{0.2\textwidth}
-        % \includegraphics[width=\linewidth]{logo_uaslp.png} 
+    \begin{minipage}[t]{0.18\textwidth}
+        \vspace{0pt}
+        \includegraphics[width=\linewidth]{LOGOUASLP.png}
     \end{minipage}
-    \begin{minipage}{0.58\textwidth}
+    \begin{minipage}[t]{0.56\textwidth}
+        \vspace{0pt}
         \centering
         {\scshape\Large \color{MainBlue} Universidad Autónoma de \\ San Luis Potosí \par}
-        \vspace{0.2cm}
-        {\color{AccentBlue}\hrule height 1.5pt}\vspace{0.2cm}
+        \vspace{0.15cm}
+        {\color{AccentBlue}\hrule height 1.5pt}\vspace{0.15cm}
         {\footnotesize \textbf{FACULTAD DE INGENIERÍA} \par}
+        \vspace{1.2cm}
+        {\arialblack\fontsize{22}{26}\selectfont\color{MainBlue} Manual del programador \\ CDiccionario\par}
     \end{minipage}
-    \begin{minipage}{0.2\textwidth}
-        \flushright
-        % \includegraphics[width=0.9\linewidth]{logo_fepzm.png}
+    \begin{minipage}[t]{0.18\textwidth}
+        \vspace{0pt}
+        \raggedleft
+        \includegraphics[width=0.95\linewidth]{LOGOINGE.png}
     \end{minipage}
 
-    \vspace{4cm}
+    \vspace{4.2cm}
 
     \begin{minipage}{0.9\textwidth}
         \centering
@@ -1237,6 +1243,7 @@ primer elemento.
 
 \newpage
 \phantomsection
+\section{Archivo}
 \addcontentsline{toc}{subsection}{Cabecera Entidad}
 \subsection*{Cabecera Entidad}
 Después de que el archivo es creado con la función \verb|void CDiccionario::Nuevo();|
@@ -1255,8 +1262,6 @@ el archivo no reduce su tamaño físico ni borra la información,
 simplemente hace una desconexión lógica de los apuntadores enlazando el 
 nodo anterior con el siguiente, esto hace que el dato se vuelva inaccesible 
 y quede "puenteado" dentro del documento.\\
-Ademas cuando el archivo ya tiene información, no es posible hacer un borrado
-ya que esto puede alterar direcciones y romper el archivo
 
 \begin{figure}[htbp]
 \centering
@@ -1274,7 +1279,7 @@ ya que esto puede alterar direcciones y romper el archivo
 
 % --- CASO 1: Eliminar al Inicio (Lista de 5) ---
 \node[anchor=west, font=\bfseries] (t1) at (0, 0) {Caso 1: Eliminacion al Inicio (La entidad a borrar es la primera de la lista)};
-\node[head, below=0.8cm of t1.west, anchor=west] (c1) {Cabecera};
+\node[head, below=0.7cm of t1.west, anchor=west] (c1) {Cabecera};
 \node[del, right=0.6cm of c1] (n1_1) {Entidad 1}; \node[ptr, right=0cm of n1_1] (p1_1) {sig};
 \node[box, right=0.6cm of p1_1] (n1_2) {Entidad 2}; \node[ptr, right=0cm of n1_2] (p1_2) {sig};
 \node[box, right=0.6cm of p1_2] (n1_3) {Entidad 3}; \node[ptr, right=0cm of n1_3] (p1_3) {sig};
@@ -1291,7 +1296,7 @@ ya que esto puede alterar direcciones y romper el archivo
 
 % --- CASO 2: Eliminar en Medio (Lista de 5) ---
 \node[anchor=west, font=\bfseries] (t2) at (0, -2.5) {Caso 2: Eliminacion en Medio (Se desconecta la Entidad 3, manteniendo la cadena)};
-\node[head, below=0.8cm of t2.west, anchor=west] (c2) {Cabecera};
+\node[head, below=0.7cm of t2.west, anchor=west] (c2) {Cabecera};
 \node[box, right=0.6cm of c2] (n2_1) {Entidad 1}; \node[ptr, right=0cm of n2_1] (p2_1) {sig};
 \node[box, right=0.6cm of p2_1] (n2_2) {Entidad 2}; \node[ptr, right=0cm of n2_2] (p2_2) {sig};
 \node[del, right=0.6cm of p2_2] (n2_3) {Entidad 3}; \node[ptr, right=0cm of n2_3] (p2_3) {sig};
@@ -1308,7 +1313,6 @@ ya que esto puede alterar direcciones y romper el archivo
 
 \end{tikzpicture}
 \label{fig:casos_eliminacion_entidad}
-\addcontentsline{toc}{subsection}{Diagrama 5: Eliminacion en Entidades}
 \end{figure}
 
 \phantomsection
@@ -1323,9 +1327,308 @@ funciones nativas de C++: \newline \par
 \campo{fwrite:}{Se encarga de escribir o guardar los bloques de datos directamente en el disco.}
 \campo{fread:}{Hace la operación inversa, leyendo un bloque de bytes desde el archivo para pasarlo a la memoria.}
 
+\newpage
+\section{Simulaciones de Escritorio: Entidad}
+\phantomsection
+\addcontentsline{toc}{subsection}{1. Simulación: CapturaEntidad}
+\subsection*{1. Simulación: CapturaEntidad}
+\textbf{Entrada:} Nombre tecleado por el usuario.\\
+\textbf{Salida:} \verb|struct Entidad| con listas vacías.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.05}
+\begin{tabular}{|c|c|l|}
+\hline
+\rowcolor{MainBlue}
+\textcolor{white}{\textbf{Caso}} & \textcolor{white}{\textbf{Entrada (cin)}} & \textcolor{white}{\textbf{Salida en Memoria (struct)}} \\
+\hline
+1 & "Materias" & \verb|{nombre: "Materias", atr: -1, data: -1, sig: -1}| \\
+\hline
+2 & "Alumnos" & \verb|{nombre: "Alumnos", atr: -1, data: -1, sig: -1}| \\
+\hline
+3 & "Maestros" & \verb|{nombre: "Maestros", atr: -1, data: -1, sig: -1}| \\
+\hline
+\end{tabular}
+\end{table}
+
+\phantomsection
+\addcontentsline{toc}{subsection}{2. Simulación: escribeEntidad}
+\subsection*{2. Simulación: escribeEntidad}
+\textbf{Entrada:} \verb|struct Entidad|.\\
+\textbf{Salida:} Dirección física asignada (\verb|ftell|).
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.05}
+\begin{tabular}{|c|c|c|p{6cm}|}
+\hline
+\rowcolor{MainBlue}
+\textcolor{white}{\textbf{Caso (Estado Archivo)}} & \textcolor{white}{\textbf{Entidad a escribir}} & \textcolor{white}{\textbf{Dir Asignada}} & \textcolor{white}{\textbf{Acción en Disco}} \\
+\hline
+1. Archivo casi vacío & "Materias" & \textbf{4} & \verb|fwrite| de 54 bytes en dir 4 (tras cabecera) \\
+\hline
+2. Archivo con 1 reg. & "Alumnos" & \textbf{58} & \verb|fwrite| de 54 bytes en dir 58 \\
+\hline
+3. Archivo con 2 reg. & "Maestros" & \textbf{112} & \verb|fwrite| de 54 bytes en dir 112 \\
+\hline
+\end{tabular}
+\end{table}
+
+\phantomsection
+\addcontentsline{toc}{subsection}{3. Simulación: insertaEntidad}
+\subsection*{3. Simulación: insertaEntidad (Conexión Lógica)}
+\textbf{Qué hace:} Evalúa dónde conectar el puntero \verb|sig| para mantener orden alfabético (\verb|strcmp|).\\
+\textbf{Entrada:} Entidad y su dirección física. \\
+\textbf{Salida:} Punteros actualizados en el archivo.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.05}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\rowcolor{MainBlue}
+\textcolor{white}{\textbf{Caso Evaluado}} & \textcolor{white}{\textbf{Entra (Dir)}} & \textcolor{white}{\textbf{Evaluación \texttt{strcmp}}} & \textcolor{white}{\textbf{Resultado Variable}} \\
+\hline
+Lista Vacía & Materias (4) & \verb|cab == -1| & \verb|cabecera = 4| \verb|Materias.sig = -1| \\
+\hline
+Va al Inicio & Alumnos (58) & Alumnos $<$ Materias & \verb|Alumnos.sig = 4|  \verb|cabecera = 58| \\
+\hline
+Va en Medio/Fin & Maestros (112) & \verb|Maestros > Alumnos| \newline & \verb|Alumnos.sig = 112|  \verb|Maestros.sig = 4| \\
+\hline
+\end{tabular}
+\end{table}
+
+\newpage
+
+\addcontentsline{toc}{subsection}{4. Simulación: ConsultaEntidades}
+\subsection*{4. Simulación: ConsultaEntidades}
+\textbf{Entrada:} \verb|cabecera = 58|.\\
+\textbf{Salida:} Impresión en pantalla.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.05}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\rowcolor{MainBlue}
+\textcolor{white}{\textbf{Iteración (\texttt{cab})}} & \textcolor{white}{\textbf{\texttt{leeEntidad(cab)}}} & \textcolor{white}{\textbf{Pantalla (Nombre)}} & \textcolor{white}{\textbf{Siguiente \texttt{cab} (\texttt{actual.sig})}} \\
+\hline
+1 (\verb|cab| = 58) & Lee dir 58 & Alumnos & \textbf{112} \\
+\hline
+2 (\verb|cab| = 112) & Lee dir 112 & Maestros & \textbf{4} \\
+\hline
+3 (\verb|cab| = 4) & Lee dir 4 & Materias & \textbf{-1} (Termina \verb|while|) \\
+\hline
+\end{tabular}
+\end{table}
+
+%Atributos%
+\newpage
+\phantomsection
+\section{Simulaciones de Escritorio: Atributos}
+\phantomsection
+\addcontentsline{toc}{subsection}{1. Simulación: CapturaAt}
+\subsection*{1. Simulación: CapturaAt}
+\textbf{Qué hace:} Inicializa la estructura del atributo en memoria RAM y pide sus características.\\
+\textbf{Entrada:} Datos capturados por el usuario (nombre, tipo, longitud, etc.).\\
+\textbf{Salida:} \verb|struct Atributo| listo para ser escrito.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.05}
+\begin{tabular}{|c|c|l|}
+\hline
+\rowcolor{MainBlue}
+\textcolor{white}{\textbf{Caso}} & \textcolor{white}{\textbf{Entrada (cin)}} & \textcolor{white}{\textbf{Salida en Memoria (struct)}} \\
+\hline
+1 & "clave", int(2) & \verb|{nombre: "clave", tipo: 2, tam: 4, iskp: 'S', sig: -1}| \\
+\hline
+2 & "carrera", char(1) & \verb|{nombre: "carrera", tipo: 1, tam: 30, iskp: 'N', sig: -1}| \\
+\hline
+3 & "nombre", char(1) & \verb|{nombre: "nombre", tipo: 1, tam: 50, iskp: 'N', sig: -1}| \\
+\hline
+\end{tabular}
+\end{table}
+
+\phantomsection
+\addcontentsline{toc}{subsection}{2. Simulación: EscribeAtributo}
+\subsection*{2. Simulación: EscribeAtributo}
+\textbf{Qué hace:} Almacena físicamente el atributo al final del archivo binario (\verb|SEEK_END|).\\
+\textbf{Entrada:} \verb|struct Atributo|.\\
+\textbf{Salida:} Dirección física asignada por \verb|ftell|.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.05}
+\begin{tabular}{|c|c|c|p{6cm}|}
+\hline
+\rowcolor{MainBlue}
+\textcolor{white}{\textbf{Llamada}} & \textcolor{white}{\textbf{Atributo a escribir}} & \textcolor{white}{\textbf{Dir Asignada}} & \textcolor{white}{\textbf{Acción en Disco}} \\
+\hline
+1ra Inserción & "clave" & \textbf{300} & \verb|fwrite| de \verb|sizeof(Atributo)| en dir 300 \\
+\hline
+2da Inserción & "carrera" & \textbf{374} & \verb|fwrite| de \verb|sizeof(Atributo)| en dir 374 \\
+\hline
+3ra Inserción & "nombre" & \textbf{448} & \verb|fwrite| de \verb|sizeof(Atributo)| en dir 448 \\
+\hline
+\end{tabular}
+\end{table}
+
+\phantomsection
+\addcontentsline{toc}{subsection}{3. Simulación: insertaAtributo}
+\subsection*{3. Simulación: insertaAtributo (Conexión Lógica)}
+\textbf{Qué hace:} Evalúa dónde conectar el puntero \verb|sig| para mantener orden alfabético (\verb|strcmp|).\\
+\textbf{Entrada:} Atributo nuevo y su dirección física. \\
+\textbf{Salida:} Punteros lógicos (\verb|sig|) actualizados.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.05}
+\begin{tabular}{|c|c|c|p{5.5cm}|}
+\hline
+\rowcolor{MainBlue}
+\textcolor{white}{\textbf{Caso Evaluado}} & \textcolor{white}{\textbf{Entra (Dir)}} & \textcolor{white}{\textbf{Evaluación \texttt{strcmp}}} & \textcolor{white}{\textbf{Resultado Variable}} \\
+\hline
+1. Lista Vacía & clave (300) & \verb|activa.atr == -1| & \verb|activa.atr = 300|\newline \verb|clave.sig = -1| \\
+\hline
+2. Va al Inicio & carrera (374) & "carrera" $<$ "clave" & \verb|carrera.sig = 300|\newline \verb|activa.atr = 374| \\
+\hline
+3. Va al Final & nombre (448) & "nombre" $>$ "clave" & \verb|clave.sig = 448|\newline \verb|nombre.sig = -1| \\
+\hline
+\end{tabular}
+\end{table}
+
+\phantomsection
+\addcontentsline{toc}{subsection}{4. Simulación: consultarAtributo}
+\subsection*{4. Simulación: consultarAtributo}
+\textbf{Qué hace:} Recorre la lista de atributos saltando por las direcciones en el archivo e imprimiendo.\\
+\textbf{Entrada:} \verb|activa.atr| = 374 (Inicio alfabético).\\
+\textbf{Salida:} Impresión en consola de los atributos.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.05}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\rowcolor{MainBlue}
+\textcolor{white}{\textbf{Iteración (\texttt{cab})}} & \textcolor{white}{\textbf{\texttt{leeAtributo(cab)}}} & \textcolor{white}{\textbf{Pantalla (Nombre)}} & \textcolor{white}{\textbf{Siguiente \texttt{cab} (\texttt{actual.sig})}} \\
+\hline
+1 (\verb|cab| = 374) & Lee dir 374 & carrera & \textbf{300} \\
+\hline
+2 (\verb|cab| = 300) & Lee dir 300 & clave (KP) & \textbf{448} \\
+\hline
+3 (\verb|cab| = 448) & Lee dir 448 & nombre & \textbf{-1} (Termina \verb|while|) \\
+\hline
+\end{tabular}
+\end{table}
+
+%Bloques simulacion%
+\clearpage
+\phantomsection
+\section{Simulaciones de Escritorio: Bloques}
+
+\phantomsection
+\addcontentsline{toc}{subsection}{1. Simulación: CapturaBloque}
+\subsection*{1. Simulación: CapturaBloque}
+\textbf{Qué hace:} Pide memoria dinámica genérica (\verb|void*|) y empaqueta los datos usando desplazamientos.\\
+\textbf{Entrada:} Datos capturados por el usuario según los tipos del arreglo de atributos.\\
+\textbf{Salida:} Puntero \verb|void*| con la información estructurada.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.05}
+\begin{tabular}{|c|c|p{8cm}|}
+\hline
+\rowcolor{MainBlue}
+\textcolor{white}{\textbf{Caso}} & \textcolor{white}{\textbf{Entrada (cin)}} & \textcolor{white}{\textbf{Salida en Memoria}} \\
+\hline
+1 & 120, "IC", "Maria", 10.0 & \verb|[sig:-1 | 120 | "IC" | "Maria" | 10.0]| \\
+\hline
+2 & 300, "ISI", "Paco", 6.4 & \verb|[sig:-1 | 300 | "ISI" | "Paco"  |  6.4]| \\
+\hline
+3 & 900, "IF", "Alan", 6.0 & \verb|[sig:-1 | 900 | "IF" | "Alan"  |  6.0]| \\
+\hline
+\end{tabular}
+\end{table}
+
+\phantomsection
+\addcontentsline{toc}{subsection}{2. Simulación: escribeBloque}
+\subsection*{2. Simulación: escribeBloque}
+\textbf{Qué hace:} Almacena físicamente el bloque genérico al final del archivo binario (\verb|SEEK_END|).\\
+\textbf{Entrada:} \verb|void* bloque| y \verb|tambloque|.\\
+\textbf{Salida:} Dirección física asignada por \verb|ftell|.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.05}
+\begin{tabular}{|c|c|c|p{6cm}|}
+\hline
+\rowcolor{MainBlue}
+\textcolor{white}{\textbf{Llamada}} & \textcolor{white}{\textbf{Bloque a escribir}} & \textcolor{white}{\textbf{Dir Asignada}} & \textcolor{white}{\textbf{Acción en Disco}} \\
+\hline
+1ra Inserción & Datos de "Maria" & \textbf{692} & \verb|fwrite| de \verb|tambloque| en dir 692 \\
+\hline
+2da Inserción & Datos de "Paco" & \textbf{784} & \verb|fwrite| de \verb|tambloque| en dir 784 \\
+\hline
+3ra Inserción & Datos de "Alan" & \textbf{850} & \verb|fwrite| de \verb|tambloque| en dir 850 \\
+\hline
+\end{tabular}
+\end{table}
+
+\phantomsection
+\addcontentsline{toc}{subsection}{3. Simulación: InsertaBloque}
+\subsection*{3. Simulación: InsertaBloque (Conexión Lógica)}
+\textbf{Qué hace:} Evalúa dónde conectar el puntero \verb|sig| para mantener orden numérico/alfabético usando \verb|comparaBloques| sobre la Clave Primaria.\\
+\textbf{Entrada:} Bloque nuevo y su dirección física. \\
+\textbf{Salida:} Punteros lógicos (\verb|sig|) actualizados en el archivo.
+
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.05}
+\begin{tabular}{|c|c|c|p{5.5cm}|}
+\hline
+\rowcolor{MainBlue}
+\textcolor{white}{\textbf{Caso Evaluado}} & \textcolor{white}{\textbf{Entra (Dir)}} & \textcolor{white}{\textbf{Evaluación \texttt{comparaBloques}}} & \textcolor{white}{\textbf{Resultado Variable}} \\
+\hline
+1. Lista Vacía & Maria (692) & \verb|activa.data == -1| & \verb|activa.data = 692|\newline \verb|Maria.sig = -1| \\
+\hline
+2. Va al Final & Paco (784) & 300 $>$ 120 (Avanza) & \verb|Maria.sig = 784|\newline \verb|Paco.sig = -1| \\
+\hline
+3. Va al Final & Alan (850) & 900 $>$ 300 (Avanza) & \verb|Paco.sig = 850|\newline \verb|Alan.sig = -1| \\
+\hline
+\end{tabular}
+\end{table}
+
+\phantomsection
+\addcontentsline{toc}{subsection}{4. Simulación: consultaBloques}
+\subsection*{4. Simulación: consultaBloques}
+\textbf{Qué hace:} Recorre la lista de bloques saltando por las direcciones en el archivo, extrayendo datos con desplazamientos y casteos para imprimir.\\
+\textbf{Entrada:} \verb|activa.data| = 692.\\
+\textbf{Salida:} Impresión en consola de todos los registros de la entidad.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.05}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\rowcolor{MainBlue}
+\textcolor{white}{\textbf{Iteración (\texttt{cab})}} & \textcolor{white}{\textbf{\texttt{LeeBloque(cab)}}} & \textcolor{white}{\textbf{Pantalla (KP, Car, Nom, Prom)}} & \textcolor{white}{\textbf{Siguiente \texttt{cab}}} \\
+\hline
+1 (\verb|cab| = 692) & Lee dir 692 & 120 \quad IC \quad Maria \quad 10.0 & \textbf{784} \\
+\hline
+2 (\verb|cab| = 784) & Lee dir 784 & 300 \quad ISI \quad Paco \quad 6.4 & \textbf{850} \\
+\hline
+3 (\verb|cab| = 850) & Lee dir 850 & 900 \quad IF \quad Alan \quad 6.0 & \textbf{-1} (Fin) \\
+\hline
+\end{tabular}
+\end{table}
 
 \newpage
 \section{Clave Primaria}
+\phantomsection
+\addcontentsline{toc}{subsection}{¿Qué es una Clave Primaria?}
 \subsection*{¿Qué es una Clave Primaria?}
 Una clave primaria en base de datos es aquella que se encarga de la 
 identificación única de ciertos registros, como puede ser el ID de un juego o 
@@ -1335,6 +1638,8 @@ permitiendo su fácil localización e identificación.
 A su vez, estas claves primarias son fundamentales para relacionarse 
 con otras tablas, convirtiéndose así en llaves foráneas.
 
+\phantomsection
+\addcontentsline{toc}{subsection}{Manejo de la Clave Primaria en el Sistema}
 \subsection*{Manejo de la Clave Primaria en el Sistema}
 Para gestionar esta regla de validación dentro de nuestro archivo binario, 
 el sistema se apoya de las siguientes funciones y lógicas:
